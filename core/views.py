@@ -312,13 +312,13 @@ def after_order(request):
             total_price = Decimal(data['totalPrice'].split(' ')[0])
             location = Location.objects.get(pk=data['locationId'])
 
-            order = Order.objects.create(
+            Order.objects.create(
                 user=request.user,
                 total_price=total_price
             )
 
             # Clear the cart after order creation
-            Cart.objects.filter(user=request.user).delete()
+            Cart.objects.filter(user=request.user, location=location).delete()
 
             return JsonResponse({'message': 'Order created successfully'})
         except Exception as e:

@@ -331,7 +331,7 @@ nav ul li a.active {
 }
 
 /* Элементы списка */
-#servicesList {
+.servicesListClass {
     display: none; /* Список скрыт по умолчанию */
     opacity: 0;
     transform: scaleY(0);
@@ -339,7 +339,7 @@ nav ul li a.active {
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-#servicesList.show {
+.servicesListClass.show {
     display: block; /* Показываем список */
     opacity: 1;
     transform: scaleY(1);
