@@ -7,7 +7,7 @@
         <h2>Our Event Locations</h2>
     </div>
 
-    
+
     <form method="GET" action="{% url 'location' %}">
         <div class="filter-section">
             <div class="filter-options">
@@ -117,8 +117,9 @@
                                                             Add to Cart
                                                         </button>
                                                     {% endif %}
+                                                    <!-- Toast notification for a location -->
                                                     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                                                        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                        <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                                                             <div class="toast-header">
                                                                 <strong class="me-auto">HappyHoliday</strong>
                                                                 <small>Now</small>
@@ -129,6 +130,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -326,63 +328,69 @@
         </footer>
 
 
-        <script>
-            document.addEventListener('click', function (event) {
-                // Check if the clicked element has the class 'view-all-btn'
-                if (event.target.classList.contains('view-all-btn')) {
-                    // Get the target container based on the button's data-target attribute
-                    const targetClass = event.target.getAttribute('data-target');
-                    const targetContainer = document.querySelector(`.card-container.${targetClass}`);
-                    const hiddenCards = targetContainer.querySelectorAll('.card.hidden');
-                    const isHidden = hiddenCards.length > 0;
-                    targetContainer.querySelectorAll('.card').forEach((card, index) => {
-                        if (index >= 4) {
-                            card.classList.toggle('hidden'); // Add or remove the 'hidden' class
-                        }
-                    });
-                    event.target.textContent = isHidden ? 'Show Less' : 'View All';
+        <script>function goBack() {
+            window.location.href = '/';
+        }
+
+        document.addEventListener('click', function (event) {
+    // Check if the clicked element has the class 'view-all-btn'
+    if (event.target.classList.contains('view-all-btn')) {
+        // Get the target container based on the button's data-target attribute
+        const targetClass = event.target.getAttribute('data-target');
+        const targetContainer = document.querySelector(`.card-container.${targetClass}`);
+        const hiddenCards = targetContainer.querySelectorAll('.card.hidden');
+        const isHidden = hiddenCards.length > 0;
+        targetContainer.querySelectorAll('.card').forEach((card, index) => {
+            if (index >= 4) {
+                card.classList.toggle('hidden'); // Add or remove the 'hidden' class
+            }
+        });
+        event.target.textContent = isHidden ? 'Show Less' : 'View All';
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Get all "Add to Cart" buttons
+    const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const locationName = button.getAttribute("data-name");
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const locationId = button.getAttribute("data-id");
+
+            // Send data to the server via a POST request
+            fetch("/add_to_cart/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify({
+                    name: locationName,
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Get the toast element using locationId
+                    const toastId = `liveToast${locationId}`;
+                    const toastElement = document.getElementById(toastId);
+
+                    // Check if toastElement exists
+                    if (toastElement) {
+                        const toast = new bootstrap.Toast(toastElement);
+                        toast.show(); // Show the toast notification
+                    } else {
+                        console.error(`Toast element with id ${toastId} not found.`);
+                    }
+                } else {
+                    alert("Error adding to cart");
                 }
-            });
-
-            document.addEventListener("DOMContentLoaded", () => {
-                // Get all "Add to Cart" buttons
-                const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
-
-                addToCartButtons.forEach(button => {
-                    button.addEventListener("click", () => {
-                        const locationName = button.getAttribute("data-name");
-                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                        const locationId = button.getAttribute("data-id");
-
-                        // Send data to the server via a POST request
-                        fetch("/add_to_cart/", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "X-CSRFToken": csrfToken
-                            },
-                            body: JSON.stringify({
-                                name: locationName,
-                            })
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                // Show success toast
-                                const toastId = `liveToast${locationId}`;
-                                const toastElement = document.getElementById(toastId);
-
-                                console.log(toastId);
-
-                                const toast = new bootstrap.Toast(toastElement);
-                                toast.show();
-                            } else {
-                                alert("Error adding to cart");
-                            }
-                        })
-                        .catch(error => console.error("Error:", error));
-                    });
-                });
-            });
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+});
 
 
         </script>
