@@ -42,6 +42,8 @@ urlpatterns = [
     path('manager/', views.manager_page, name='manager'),
     path('manager/edit/<int:pk>/', views.edit_booking, name='edit_booking'),
     path('manager/delete/<int:pk>/', views.delete_booking, name='delete_booking'),
+    path('update_status/', views.update_status, name='update_status'),
+
 ]
 
 # Static files (CSS, JavaScript, images) serving in development

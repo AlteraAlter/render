@@ -147,6 +147,7 @@ def profile(request):
 
 
 def my_orders_view(request):
+    carts = Cart.objects.filter(user=request.user)
     if not request.user.is_authenticated:
         return redirect('login')  # Перенаправить на страницу входа, если пользователь не авторизован
 
@@ -349,6 +350,7 @@ def delete_order(request, order_id):
 
 
 def manager_page(request):
+    bookings = Booking.objects.all()
     orders = Order.objects.all()
     bookings = Booking.objects.all()
     return render(request, 'core/manager_home.html', {'bookings': bookings})
@@ -388,3 +390,4 @@ def update_status(request):
             return JsonResponse({'status': 'success'})
         except Order.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Order not found'})
+
