@@ -36,7 +36,6 @@ urlpatterns = [
     path('my_orders/', views.my_orders, name='orders'),
     path('cart/', views.cart, name='cart'),
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
-    path('filter-locations/', views.filter_locations, name='filter_locations'),
     path('blocked-dates/', views.get_blocked_dates, name='blocked_dates'),
 
     # Manager pages
