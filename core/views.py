@@ -1,10 +1,10 @@
 import json
+from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
 from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from .forms import RegisterForm, LoginForm, CustomSetPasswordForm
@@ -12,20 +12,17 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from decimal import Decimal
-from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 
 from django.core.mail import send_mail
-from django.conf import settings
 from .models import Page, Cart
 from .models import Order
-from .models import Location, Rating, Booking
+from .models import Location, Booking
 from django.shortcuts import get_object_or_404
 from .forms import OrderForm
-import datetime
 
 
 # Create your views here.
@@ -164,17 +161,16 @@ def location(request):
     location = request.GET.get('location', '')
     date = request.GET.get('date', '')
     guests = request.GET.get('guests', '')
-    print(location)
 
     # Start with all locations
     locations = Location.objects.all()
 
-    # Filter by location type
+    # Filter by location type if provided
     if location:
         locations = locations.filter(location_type=location)
 
-    # Filter by guest capacity
-    if guests:
+    # Filter by exact guest capacity (matching choices)
+    if guests and guests in dict(Location.CAPACITY_CHOICES):
         locations = locations.filter(number_of_guests=guests)
 
     # Exclude locations already booked on the specified date
@@ -185,25 +181,25 @@ def location(request):
         except ValueError:
             return render(request, 'core/locations.html', {
                 'locations': [],
-                'error': 'Invalid date format. Use YYYY-MM-DD.'
+                'error': 'Invalid date format. Use YYYY-MM-DD.',
+                'filters': {'location': location, 'date': date, 'guests': guests}
             })
 
     # Get the user's cart items
-    if request.user.is_authenticated:
-        carts = Cart.objects.filter(user=request.user)
-        # Get a set of location IDs that are in the cart for easy lookup
-        locations_in_cart = set(carts.values_list('location_id', flat=True))
-    else:
-        locations_in_cart = set()
+    carts = Cart.objects.filter(user=request.user) if request.user.is_authenticated else []
+    locations_in_cart = set(carts.values_list('location_id', flat=True)) if carts else set()
 
     # Render the results
     return render(request, 'core/locations.html', {
         'SW': locations.filter(location_type='SV'),
         'MW': locations.filter(location_type='MV'),
         'CC': locations.filter(location_type='CC'),
-        'cart_num': len(carts) if carts else None,
-        'locations_in_cart': locations_in_cart,  # Pass the locations already in the cart
+        'cart_num': len(carts),
+        'locations_in_cart': locations_in_cart,  # Locations already in the cart
+        'filters': {'location': location, 'date': date, 'guests': guests}  # Pass filters to the template
     })
+
+
 
 
 def suppliers(request):
@@ -280,7 +276,6 @@ def add_to_cart(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            location_id = data.get("id")
             location_name = data.get("name")
             location = Location.objects.get(name=location_name)
             user = request.user

@@ -1,6 +1,8 @@
 {% extends 'core/core.html' %}
-{% load static %}
 {% load custom_filters %}
+
+{% load static %}
+
 
 {% block content %}
     <div class="hero-section">
@@ -9,38 +11,54 @@
 
 
     <form method="GET" action="{% url 'location' %}">
-        <div class="filter-section">
-            <div class="filter-options">
-                <select class="filter-select location-view" name="location">
-                    <option value="" disabled selected>Location View</option>
-                    <option value="SV">Sea View</option>
-                    <option value="CC">City Centre</option>
-                    <option value="MV">Mountain View</option>
-                </select>
-                <input type="text" class="filter-date" name="date" placeholder="Select Date">
-                <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        flatpickr(".filter-date", {
-                            dateFormat: "Y-m-d",
-                            locale: "en", // Sets the language to English
-                            noCalendar: false, // Enable calendar (default)
-                            enableTime: false // Disable time picker
-                        });
-                    });
-                </script>
-                <select class="filter-select no-of-guests" name="guests">
-                    <option value="" disabled selected>Number of Guests</option>
-                    <option value="2-6">2 to 6</option>
-                    <option value="7-15">7 to 15</option>
-                    <option value="16-30">16 to 30</option>
-                    <option value="30-50">30 to 50</option>
-                </select>
+    <div class="filter-section">
+        <div class="filter-options">
+            <!-- Location Select -->
+            <select class="filter-select location-view" name="location">
+                <option value="" disabled {% if not request.GET.location %}selected{% endif %}>Location View</option>
+                <option value="SV" {% if request.GET.location == "SV" %}selected{% endif %}>Sea View</option>
+                <option value="CC" {% if request.GET.location == "CC" %}selected{% endif %}>City Centre</option>
+                <option value="MV" {% if request.GET.location == "MV" %}selected{% endif %}>Mountain View</option>
+            </select>
 
-                <button class="filter-search" type="submit">Search</button>
-            </div>
+            <!-- Date Picker -->
+            <input
+                type="text"
+                class="filter-date"
+                name="date"
+                placeholder="Select Date"
+                value="{{ request.GET.date }}">
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    flatpickr(".filter-date", {
+                        dateFormat: "Y-m-d",
+                        locale: "en",
+                        noCalendar: false,
+                        enableTime: false
+                    });
+                });
+            </script>
+
+            <!-- Guests Select -->
+            <select class="filter-select no-of-guests" name="guests">
+                <option value="" disabled {% if not request.GET.guests %}selected{% endif %}>Number of Guests</option>
+                <option value="2-6" {% if request.GET.guests == "2-6" %}selected{% endif %}>2 to 6</option>
+                <option value="7-15" {% if request.GET.guests == "7-15" %}selected{% endif %}>7 to 15</option>
+                <option value="16-30" {% if request.GET.guests == "16-30" %}selected{% endif %}>16 to 30</option>
+                <option value="30-50" {% if request.GET.guests == "30-50" %}selected{% endif %}>30 to 50</option>
+            </select>
+
+            <!-- Submit Button -->
+            <button class="filter-search" type="submit">Search</button>
+
+            <!-- Clear Filters Button -->
+            <a href="{% url 'location' %}" class="clear-filters">Clear Filters</a>
         </div>
-    </form>
+    </div>
+</form>
+
+
 
 
     <div class="locations-container1" >
@@ -117,20 +135,6 @@
                                                             Add to Cart
                                                         </button>
                                                     {% endif %}
-                                                    <!-- Toast notification for a location -->
-                                                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                                                        <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                                                            <div class="toast-header">
-                                                                <strong class="me-auto">HappyHoliday</strong>
-                                                                <small>Now</small>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="toast-body">
-                                                                {{ location.name }} has been added to cart!
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -139,6 +143,19 @@
                             </div>
                         </div>
                     </div>
+                        <!-- Toast notification for a location -->
+                        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                            <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <strong class="me-auto">HappyHoliday</strong>
+                                    <small>Now</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                    {{ location.name }} has been added to cart!
+                                </div>
+                            </div>
+                        </div>
                 {% endfor %}
                 </div>
             </div>
@@ -193,18 +210,6 @@
                                                             Add to Cart
                                                         </button>
                                                     {% endif %}
-                                                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                                                        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                                                            <div class="toast-header">
-                                                                <strong class="me-auto">HappyHoliday</strong>
-                                                                <small>Now</small>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="toast-body">
-                                                                {{ location.name }} has been added to cart!
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -213,6 +218,18 @@
                             </div>
                         </div>
                     </div>
+                        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                            <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <strong class="me-auto">HappyHoliday</strong>
+                                    <small>Now</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                    {{ location.name }} has been added to cart!
+                                </div>
+                            </div>
+                        </div>
                 {% endfor %}
                 </div>
             </div>
@@ -267,18 +284,6 @@
                                                             Add to Cart
                                                         </button>
                                                     {% endif %}
-                                                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                                                        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                                                            <div class="toast-header">
-                                                                <strong class="me-auto">HappyHoliday</strong>
-                                                                <small>Now</small>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="toast-body">
-                                                                {{ location.name }} has been added to cart!
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -287,6 +292,18 @@
                             </div>
                         </div>
                     </div>
+                        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                            <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <strong class="me-auto">HappyHoliday</strong>
+                                    <small>Now</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                    {{ location.name }} has been added to cart!
+                                </div>
+                            </div>
+                        </div>
                 {% endfor %}
                 </div>
             </div>
@@ -328,70 +345,114 @@
         </footer>
 
 
-        <script>function goBack() {
-            window.location.href = '/';
-        }
-
-        document.addEventListener('click', function (event) {
-    // Check if the clicked element has the class 'view-all-btn'
-    if (event.target.classList.contains('view-all-btn')) {
-        // Get the target container based on the button's data-target attribute
-        const targetClass = event.target.getAttribute('data-target');
-        const targetContainer = document.querySelector(`.card-container.${targetClass}`);
-        const hiddenCards = targetContainer.querySelectorAll('.card.hidden');
-        const isHidden = hiddenCards.length > 0;
-        targetContainer.querySelectorAll('.card').forEach((card, index) => {
-            if (index >= 4) {
-                card.classList.toggle('hidden'); // Add or remove the 'hidden' class
+        <script>
+            function goBack() {
+                window.location.href = '/';
             }
-        });
-        event.target.textContent = isHidden ? 'Show Less' : 'View All';
-    }
-});
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Get all "Add to Cart" buttons
-    const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
+            document.addEventListener('click', function (event) {
+                // Check if the clicked element has the class 'view-all-btn'
+                if (event.target.classList.contains('view-all-btn')) {
+                    // Get the target container based on the button's data-target attribute
+                    const targetClass = event.target.getAttribute('data-target');
+                    const targetContainer = document.querySelector(`.card-container.${targetClass}`);
+                    const hiddenCards = targetContainer.querySelectorAll('.card.hidden');
+                    const isHidden = hiddenCards.length > 0;
+                    targetContainer.querySelectorAll('.card').forEach((card, index) => {
+                        if (index >= 4) {
+                            card.classList.toggle('hidden'); // Add or remove the 'hidden' class
+                        }
+                    });
+                    event.target.textContent = isHidden ? 'Show Less' : 'View All';
+                }
+            });
 
-    addToCartButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const locationName = button.getAttribute("data-name");
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            const locationId = button.getAttribute("data-id");
-
-            // Send data to the server via a POST request
-            fetch("/add_to_cart/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken
-                },
-                body: JSON.stringify({
-                    name: locationName,
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Get the toast element using locationId
-                    const toastId = `liveToast${locationId}`;
+            document.addEventListener("DOMContentLoaded", () => {
+                // Check if there's a toast flag in session storage
+                const toastId = sessionStorage.getItem("toastId");
+                if (toastId) {
                     const toastElement = document.getElementById(toastId);
 
-                    // Check if toastElement exists
                     if (toastElement) {
-                        const toast = new bootstrap.Toast(toastElement);
-                        toast.show(); // Show the toast notification
-                    } else {
-                        console.error(`Toast element with id ${toastId} not found.`);
+                        if (typeof bootstrap !== "undefined") {
+                            console.log("Bootstrap is loaded");
+                        } else {
+                            console.error("Bootstrap is not loaded");
+                        }
+                        setTimeout(() => {
+                            const toast = new bootstrap.Toast(toastElement);
+                            toast.show();
+                        }, 1000);
                     }
-                } else {
-                    alert("Error adding to cart");
+                    sessionStorage.removeItem("toastId"); // Clear the flag
                 }
-            })
-            .catch(error => console.error("Error:", error));
-        });
-    });
-});
 
+                // Get all "Add to Cart" buttons
+                const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
 
+                addToCartButtons.forEach(button => {
+                    button.addEventListener("click", () => {
+                        const locationName = button.getAttribute("data-name");
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                        const locationId = button.getAttribute("data-id");
+
+                        // Send data to the server via a POST request
+                        fetch("/add_to_cart/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": csrfToken
+                            },
+                            body: JSON.stringify({
+                                name: locationName,
+                            })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Store the toastId in session storage
+                                sessionStorage.setItem("toastId", `liveToast${locationId}`);
+                                window.location.reload(); // Reload the page
+                            } else {
+                                showToast("Error: You must be logged in to add to the cart.", "danger");
+                            }
+                        })
+                        .catch(error => {
+                            // You can handle errors here if needed
+                            console.error("Error occurred:", error);
+                            showToast("An unexpected error occurred. Please try again.", "danger");
+                        });
+                    });
+                });
+                function showToast(message, type) {
+                    // Create a toast element dynamically
+                    const toastContainer = document.querySelector('.toast-container');
+
+                    // Create the toast element with custom HTML structure
+                    const toastElement = document.createElement('div');
+                    toastElement.classList.add('toast');
+                    toastElement.setAttribute('role', 'alert');
+                    toastElement.setAttribute('aria-live', 'assertive');
+                    toastElement.setAttribute('aria-atomic', 'true');
+
+                    // Add custom toast structure and message
+                    toastElement.innerHTML = `
+                        <div class="toast-header">
+                            <strong class="me-auto">HappyHoliday</strong>
+                            <small>Now</small>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    `;
+
+                    // Append the toast to the toast container
+                    toastContainer.appendChild(toastElement);
+
+                    // Show the toast using Bootstrap's Toast API
+                    const toast = new bootstrap.Toast(toastElement);
+                    toast.show();
+                }
+            });
         </script>
 {% endblock %}

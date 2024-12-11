@@ -46,7 +46,7 @@ urlpatterns = [
 
 ]
 
-# Static files (CSS, JavaScript, images) serving in development
-if not settings.DEBUG:
+# Static files (CSS, JavaScript, location_images) serving in development
+if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

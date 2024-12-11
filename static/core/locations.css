@@ -700,8 +700,3 @@ img.icon {
     font-size: 1.1rem;
     margin-right: 15px;
 }
-
-
-.border-highlight {
-    border: 2px solid #28a745 !important; /* Green border */
-}

@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(blank=True, max_length=255, null=True)),
                 ('location_type', models.CharField(blank=True, choices=[('MW', 'Mountain View'), ('SW', 'Sea View'), ('CC', 'City Center')], max_length=2, null=True)),
                 ('number_of_guests', models.CharField(blank=True, choices=[('7-15', '7 to 15'), ('16-30', '16 to 30'), ('2-6', '2 to 6'), ('30-50', '30 to 50')], max_length=10, null=True)),
-                ('image', models.ImageField(blank=True, null=True, upload_to='images')),
+                ('image', models.ImageField(blank=True, null=True, upload_to='location_images')),
                 ('base_price', models.DecimalField(decimal_places=2, default=Decimal('100.00'), max_digits=10)),
                 ('description', models.CharField(blank=True, max_length=255, null=True)),
             ],

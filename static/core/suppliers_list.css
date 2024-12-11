@@ -372,7 +372,7 @@ nav ul li a.active {
 .category-image {
     width: 150px;
     height: 150px;
-    border-radius: 50%; /* Make images circular */
+    border-radius: 50%; /* Make location_images circular */
     object-fit: cover;
     margin-bottom: 10px;
     border: 2px solid #ddd;
