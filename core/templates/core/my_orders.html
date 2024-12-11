@@ -1,0 +1,244 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Holiday - Locations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{% static 'core/my_orders.css' %}">
+</head>
+<body>
+
+        <!-- Navigation bar and header section -->
+        <header class="header">
+            <div class="logo">
+                <h1>Happy Holiday</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'location' %}">Location</a></li>
+                    <li><a href="{% url 'suppliers' %}">Services</a></li>
+                    <li><a href="{% url 'about_us' %}">About Us</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                {% if user.is_authenticated %}
+                    <!-- Hamburger menu button -->
+                    <div class="hamburger-menu" onclick="toggleMenu()">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+            
+                    <!-- Mobile Menu -->
+                    <div class="mobile-menu" id="mobileMenu">
+                        <ul>
+                            <li>
+                                <a href="{% url 'profile' %}">
+                                    <i class="fa fa-user-circle"></i> My Account
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'cart' %}">
+                                    <i class="fa fa-shopping-cart"></i> Cart
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'orders' %}">
+                                    <i class="fa fa-list"></i> My Orders
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout' %}">
+                                    <i class="fa fa-sign-out-alt"></i> Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="login-btn">Sign in</a>
+                    <a href="{% url 'signup' %}" class="signup-btn">Sign up</a>
+                {% endif %}
+            </div>   
+            
+            <script>
+                // Function to toggle the mobile menu
+                function toggleMenu() {
+                    const menu = document.getElementById("mobileMenu");
+                    menu.classList.toggle("show");
+                }
+        
+                // Close the menu when clicking outside
+                window.addEventListener("click", function (event) {
+                    const menu = document.getElementById("mobileMenu");
+                    const hamburger = document.querySelector(".hamburger-menu");
+                    if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                        menu.classList.remove("show");
+                    }
+                });
+            </script>
+        </header>
+
+        <main class="main-content">
+            <div class="hero-section">
+                <h2>My Orders</h2>
+            </div>
+        
+            {% for order in orders %}
+            <div class="order-container">
+                <div class="order-header">
+                    <!-- Left side: Order name -->
+                    <div class="order-left">
+                        <h3 class="m-0">Order {{ forloop.counter }}</h3>
+                    </div>
+        
+                    <!-- Right side: Order and payment status -->
+                    <div class="order-right">
+                        <!-- Order Status -->
+                        <div class="order-status">
+                            <small>Order Status:</small>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-eye text-muted me-2"></i>
+                                <span class="text-muted">{{ order.status | upper }}</span>
+                            </div>
+                        </div>
+        
+                        <!-- Payment Status -->
+                        <div class="payment-status">
+                            <small>Payment Status:</small>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle text-success"></i>
+                                <span class="text-success fw-bold">Paid</span>
+                            </div>
+                        </div>
+        
+                        <!-- Delete Order Button -->
+                        <div class="delete-order">
+                            <p class="d-inline-flex gap-1">
+                                <form method="post" action="{% url 'delete_order' order.id %}">
+                                    {%csrf_token %}
+                                    <button class="btn btn-danger">
+                                        Delete Order
+                                    </button>  
+                                </form>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- View Details (on a new line, centered) -->
+                <div class="view-details mt-3 text-center">
+                    <a href="#" data-bs-toggle="collapse" data-bs-target="#collapseExample{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseExample" class="btn btn-link p-0">
+                        View Details
+                    </a>
+                </div>
+        
+                <!-- Additional Details (collapsed by default) -->
+                <div class="collapse" id="collapseExample{{ forloop.counter }}">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <p class="details-text">
+                                <strong>Total Price:</strong> {{ order.total_price }} KZT
+                            </p>
+                            <p class="details-text">
+                                <strong>Order Date:</strong> {{ order.created_at }}
+                            </p>
+                            <!-- You can add more details here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+        
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Инициализация всех элементов Collapse
+                const collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
+                
+                collapseElements.forEach(element => {
+                    element.addEventListener('click', function () {
+                        const targetId = this.getAttribute('data-bs-target');
+                        const targetElement = document.querySelector(targetId);
+                        
+                        if (targetElement.classList.contains('show')) {
+                            console.log(`Collapse is now hidden: ${targetId}`);
+                        } else {
+                            console.log(`Collapse is now shown: ${targetId}`);
+                        }
+                    });
+                });
+            });
+
+            function deleteOrder(orderId) {
+                // Подтверждение перед удалением
+                if (confirm('Are you sure you want to delete this order?')) {
+                    // Отправляем запрос на сервер для удаления заказа
+                    fetch(`/delete_order/${orderId}/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value, // Получаем CSRF токен
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Order deleted successfully');
+                            location.reload();  // Перезагружаем страницу, чтобы обновить список заказов
+                        } else {
+                            alert('Error deleting order');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while deleting the order');
+                    });
+                }
+            }
+        </script>
+        
+        <!-- Footer Section -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Happy Holiday</h2>
+                </div>
+                <div class="social-media">
+                    <div class="social-icon">
+                        <a href="#"><img src="{% static 'core/telegram.png' %}" alt="Telegram" class="icon"></a>
+                        <a href="#"><img src="{% static 'core/instagram.png' %}" alt="Instagram" class="icon"></a>
+                        <a href="#"><img src="{% static 'core/twitter.png' %}" alt="Twitter" class="icon"></a>
+                        <a href="#"><img src="{% static 'core/facebook.png' %}" alt="Facebook" class="icon"></a>
+                    </div>
+                </div>
+                <div class="copyright">
+                    &copy;2024 Happy Holiday | All Rights Reserved
+                </div>
+                <div class="contact-info">
+                    <h3>Contact Details</h3>
+                    <div class="info-item">
+                        <span class="icon">📍</span>
+                        <p><strong>Address:</strong> Almaty Region, Kaskelen, Abylai Khan 1/1</p>
+                    </div>
+                    <div class="info-item">
+                        <span class="icon">📞</span>
+                        <p><strong>Phone:</strong> +7 777 604 78 68</p>
+                    </div>
+                    <div class="info-item">
+                        <span class="icon">✉️</span>
+                        <p><strong>Email:</strong> 220107001@stu.sdu.edu.kz</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+</body>
+</html>

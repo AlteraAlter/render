@@ -1,0 +1,92 @@
+<header class="header">
+        <div class="logo">
+            <h1>Happy Holiday</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}" >Home</a></li>
+                <li><a href="{% url 'location' %}" class="active">Location</a></li>
+                <li><a href="{% url 'suppliers' %}">Services</a></li>
+                <li><a href="{% url 'about_us' %}">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+                {% if user.is_authenticated %}
+                    <!-- Hamburger menu button -->
+                    <div class="hamburger-menu" onclick="toggleMenu()">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+
+                    <!-- Mobile Menu -->
+                    <div class="mobile-menu" id="mobileMenu">
+                        <ul>
+                            <li>
+                                <a href="{% url 'profile' %}">
+                                    <i class="fa fa-user-circle"></i> My Account
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'cart' %}">
+                                    <i class="fa fa-shopping-cart"></i> Cart
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'orders' %}">
+                                    <i class="fa fa-list"></i> My Orders
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout' %}">
+                                    <i class="fa fa-sign-out-alt"></i> Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="login-btn">Sign in</a>
+                    <a href="{% url 'signup' %}" class="signup-btn">Sign up</a>
+                {% endif %}
+            </div>
+
+            <script>
+                // Function to toggle the mobile menu
+                function toggleMenu() {
+                    const menu = document.getElementById("mobileMenu");
+                    menu.classList.toggle("show");
+                }
+
+                // Close the menu when clicking outside
+                window.addEventListener("click", function (event) {
+                    const menu = document.getElementById("mobileMenu");
+                    const hamburger = document.querySelector(".hamburger-menu");
+                    if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                        menu.classList.remove("show");
+                    }
+                });
+            </script>
+    </header>
+
+    <script>
+        // Function to toggle mobile menu
+        function toggleMenu() {
+            const menu = document.getElementById("mobileMenu");
+            menu.classList.toggle("show"); // Добавляем/удаляем класс .show для отображения меню
+
+            const bars = document.querySelectorAll(".hamburger-menu .bar");
+            // Меняем форму гамбургер-меню при открытии
+            bars[0].classList.toggle("change1");
+            bars[1].classList.toggle("change2");
+            bars[2].classList.toggle("change3");
+        }
+
+        // Закрытие меню, если пользователь кликает вне меню
+        window.addEventListener("click", function(event) {
+            const menu = document.getElementById("mobileMenu");
+            const hamburger = document.querySelector(".hamburger-menu");
+            if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                menu.classList.remove("show");
+            }
+        });
+    </script>

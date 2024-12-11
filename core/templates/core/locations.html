@@ -1,0 +1,381 @@
+{% extends 'core/core.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+    <div class="hero-section">
+        <h2>Our Event Locations</h2>
+    </div>
+
+    
+    <form method="GET" action="{% url 'location' %}">
+        <div class="filter-section">
+            <div class="filter-options">
+                <select class="filter-select location-view" name="location">
+                    <option value="" disabled selected>Location View</option>
+                    <option value="SV">Sea View</option>
+                    <option value="CC">City Centre</option>
+                    <option value="MV">Mountain View</option>
+                </select>
+                <input type="text" class="filter-date" name="date" placeholder="Select Date">
+                <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        flatpickr(".filter-date", {
+                            dateFormat: "Y-m-d",
+                            locale: "en", // Sets the language to English
+                            noCalendar: false, // Enable calendar (default)
+                            enableTime: false // Disable time picker
+                        });
+                    });
+                </script>
+                <select class="filter-select no-of-guests" name="guests">
+                    <option value="" disabled selected>Number of Guests</option>
+                    <option value="2-6">2 to 6</option>
+                    <option value="7-15">7 to 15</option>
+                    <option value="16-30">16 to 30</option>
+                    <option value="30-50">30 to 50</option>
+                </select>
+
+                <button class="filter-search" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
+
+    <div class="locations-container1" >
+        <h1><a href="{% url 'location' %}" class="loc-header"><br></a></h1>
+        <div class="locations1">
+            <div class="location1">
+                <a href="#sea_view">
+                    <img src="{% static 'core/1st.png' %}" alt="With Sea View">
+                    <p class="view-text1">with sea view</p>
+                </a>
+            </div>
+            <div class="location1">
+                <a href="#mountain_view">
+                    <img src="{% static 'core/3rd.png' %}" alt="With Mountain View">
+                    <p class="view-text1">with mountain view</p>
+                </a>
+            </div>
+            <div class="location1">
+                <a href="#city_center">
+                    <img src="{% static 'core/2nd.png' %}" alt="In the City Center">
+                    <p class="view-text1">in the city center</p>
+                </a>
+            </div>
+        </div>
+        <hr class="separator">
+    </div>
+    <div class="recommendations" id="sea_view">
+            <div class="locations-container">
+                <div class="header-wrapper">
+                    <h2>Locations with Sea View </h2>
+                    <button class="view-all-btn" data-target="sea-view">View All</button>
+                </div>
+                <div class="card-container sea-view">
+                    {% for location in SW %}
+                        <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
+                            <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ location.name }}</h5>
+                                <p class="card-text">{{ location.description }}</p>
+
+                                <div class="container mt-5">
+                                    <!-- Button to Open Modal -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace }}">
+                                        View Details
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel{{ forloop.counter }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <!-- Close Button -->
+                                                <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                                                <div class="modal-body">
+                                                    <img src="{{ location.image.url }}" alt="Modal Image" class="modal-image img-fluid">
+                                                    <h5 class="modal-title mt-3" id="exampleModalLabel{{ forloop.counter }}">{{ location.name }}</h5>
+                                                    <p class="modal-description">{{ location.description }}</p>
+                                                    <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }} people</strong> </p>
+                                                    <p class="modal-capacity"><strong>Price: {{ location.base_price }} KZT</strong></p>
+                                                    <div class="d-flex justify-content-center">
+                                                        <!-- Add to Cart Button -->
+                                                    <button type="button"
+                                                            class="btn btn-primary add-to-cart-btn"
+                                                            id="liveToastBtn"
+                                                            data-id="{{ location.id }}"
+                                                            data-name="{{ location.name }}">
+                                                        Add to Cart
+                                                    </button>
+                                                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                                                      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                        <div class="toast-header">
+
+                                                          <strong class="me-auto">HappyHoliday</strong>
+                                                          <small>Now</small>
+                                                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="toast-body">
+                                                            {{ location.name }} has been added to cart!
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                                                            <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                                <div class="toast-header">
+                                                                    <strong class="me-auto">HappyHoliday</strong>
+                                                                    <small>Now</small>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="toast-body">
+                                                                    {{ location.name }} has been added to cart!
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="recommendations" id="mountain_view">
+            <div class="locations-container">
+                <div class="header-wrapper">
+                    <h2>Locations with Mountain View </h2>
+                    <button class="view-all-btn" data-target="mountain-view">View All</button>
+                </div>
+                <div class="card-container mountain-view">
+                    {% for location in MW %}
+                        <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
+                            <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ location.name }}</h5>
+                                <p class="card-text">{{ location.description }}</p>
+
+                                <div class="container mt-5">
+                                    <!-- Button to Open Modal -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace}}">
+                                        View Details
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                          <div class="modal-content">
+                                            <!-- Кнопка закрытия -->
+                                            <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+
+                                            <div class="modal-body">
+                                                <img src="{{ location.image.url }}" alt="Modal Image" class="modal-image img-fluid">
+                                                <h5 class="modal-title mt-3" id="exampleModalLabel">{{ location.name }}</h5>
+                                                <p class="modal-description">{{ location.description }}</p>
+                                                <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }} people</strong></p>
+                                                <p class="modal-capacity"><strong>Price: {{ location.base_price }}KZT</strong></p>
+                                                <div class="d-flex justify-content-center">
+                                                    <!-- Add to Cart Button -->
+                                                    <button type="button"
+                                                            class="btn btn-primary add-to-cart-btn"
+                                                            id="liveToastBtn"
+                                                            data-id="{{ location.id }}"
+                                                            data-name="{{ location.name }}">
+
+                                                        Add to Cart
+                                                    </button>
+                                                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                                                      <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                        <div class="toast-header">
+
+                                                          <strong class="me-auto">HappyHoliday</strong>
+                                                          <small>Now</small>
+                                                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="toast-body">
+                                                            {{ location.name }} has been added to cart
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="recommendations" id="city_center">
+            <div class="locations-container">
+                <div class="header-wrapper">
+                    <h2>Locations with City Center </h2>
+                    <button class="view-all-btn" data-target="city-center">View All</button>
+                </div>
+                <div class="card-container city-center">
+                    {% for location in CC %}
+                        <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
+                            <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ location.name }}</h5>
+                                <p class="card-text">{{ location.description }}</p>
+
+                                <div class="container mt-5">
+                                    <!-- Button to Open Modal -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace}}">
+                                        View Details
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                          <div class="modal-content">
+                                            <!-- Кнопка закрытия -->
+                                            <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+
+                                            <div class="modal-body">
+                                                <img src="{{ location.image.url }}" alt="Modal Image" class="modal-image img-fluid">
+                                                <h5 class="modal-title mt-3" id="exampleModalLabel">{{ location.name }}</h5>
+                                                <p class="modal-description">{{ location.description }}</p>
+                                                <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }}people </strong></p>
+                                                <p class="modal-capacity"><strong>Price: {{ location.base_price }}KZT</strong></p>
+                                                <div class="d-flex justify-content-center">
+                                                    <button type="button"
+                                                            class="btn btn-primary add-to-cart-btn"
+                                                            id="liveToastBtn"
+                                                            data-id="{{ location.id }}"
+                                                            data-name="{{ location.name }}">
+                                                        Add to Cart
+                                                    </button>
+                                                    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                                                      <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                        <div class="toast-header">
+
+                                                          <strong class="me-auto">HappyHoliday</strong>
+                                                          <small>Now</small>
+                                                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="toast-body">
+                                                            {{ location.name }} has been added to cart
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Happy Holiday</h2>
+                </div>
+                <div class="social-media">
+                    <div class="social-icon">
+                        <a href="#"><img src="{% static 'core/telegram.png' %}" alt="Telegram" class="icon"></a>
+                        <a href="#"><img src="{% static 'core/instagram.png' %}" alt="Instagram" class="icon"></a>
+                        <a href="#"><img src="{% static 'core/twitter.png' %}" alt="Twitter" class="icon"></a>
+                        <a href="#"><img src="{% static 'core/facebook.png' %}" alt="Facebook" class="icon"></a>
+                    </div>
+                </div>
+                <div class="copyright">
+                    &copy;2024 Happy Holiday | All Rights Reserved
+                </div>
+                <div class="contact-info">
+                    <h3>Contact Details</h3>
+                    <div class="info-item">
+                        <span class="icon">📍</span>
+                        <p><strong>Address:</strong> Almaty Region, Kaskelen, Abylai Khan 1/1</p>
+                    </div>
+                    <div class="info-item">
+                        <span class="icon">📞</span>
+                        <p><strong>Phone:</strong> +7 777 604 78 68</p>
+                    </div>
+                    <div class="info-item">
+                        <span class="icon">✉️</span>
+                        <p><strong>Email:</strong> 220107001@stu.sdu.edu.kz</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+        <script>
+            document.addEventListener('click', function (event) {
+                // Check if the clicked element has the class 'view-all-btn'
+                if (event.target.classList.contains('view-all-btn')) {
+                    // Get the target container based on the button's data-target attribute
+                    const targetClass = event.target.getAttribute('data-target');
+                    const targetContainer = document.querySelector(`.card-container.${targetClass}`);
+                    const hiddenCards = targetContainer.querySelectorAll('.card.hidden');
+                    const isHidden = hiddenCards.length > 0;
+                    targetContainer.querySelectorAll('.card').forEach((card, index) => {
+                        if (index >= 4) {
+                            card.classList.toggle('hidden'); // Add or remove the 'hidden' class
+                        }
+                    });
+                    event.target.textContent = isHidden ? 'Show Less' : 'View All';
+                }
+            });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                // Get all "Add to Cart" buttons
+                const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
+
+                addToCartButtons.forEach(button => {
+                    button.addEventListener("click", () => {
+                        // Get data attributes
+                        const locationName = button.getAttribute("data-name");
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                        const locationId = button.getAttribute("data-id");
+
+                        // Send data to the server via a POST request
+                        fetch("/add_to_cart/", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRFToken": csrfToken
+                            },
+                            body: JSON.stringify({
+                                name: locationName,
+                            })
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Show success toast
+                                const toastId = `liveToast${locationId}`;
+                                const toastElement = document.getElementById(toastId);
+
+                                console.log(toastId);
+
+                                const toast = new bootstrap.Toast(toastElement);
+                                toast.show();
+                            } else {
+                                alert("Error adding to cart");
+                            }
+                        })
+                        .catch(error => console.error("Error:", error));
+                    });
+                });
+            });
+
+
+        </script>
+{% endblock %}

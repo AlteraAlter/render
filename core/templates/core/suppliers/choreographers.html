@@ -1,0 +1,242 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choreographers - Happy Holiday</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+    <link rel="stylesheet" href="{% static 'core/suppliers_list.css' %}">
+</head>
+<body>
+    <!-- Navigation bar and header section -->
+    <header class="header">
+        <div class="logo">
+            <h1>Happy Holiday</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'location' %}">Location</a></li>
+                <li><a href="{% url 'suppliers' %}">Services</a></li>
+                <li><a href="{% url 'about_us' %}">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <!-- Hamburger menu button -->
+                <div class="hamburger-menu" onclick="toggleMenu()">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+        
+                <!-- Mobile Menu -->
+                <div class="mobile-menu" id="mobileMenu">
+                    <ul>
+                        <li>
+                            <a href="{% url 'profile' %}">
+                                <i class="fa fa-user-circle"></i> My Account
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'cart' %}">
+                                <i class="fa fa-shopping-cart"></i> Cart
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'orders' %}">
+                                <i class="fa fa-list"></i> My Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}">
+                                <i class="fa fa-sign-out-alt"></i> Log Out
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{% url 'signin' %}" class="login-btn">Sign in</a>
+                <a href="{% url 'signup' %}" class="signup-btn">Sign up</a>
+            {% endif %}
+        </div>   
+
+        <script>
+            // Function to toggle the mobile menu
+            function toggleMenu() {
+                const menu = document.getElementById("mobileMenu");
+                menu.classList.toggle("show");
+            }
+    
+            // Close the menu when clicking outside
+            window.addEventListener("click", function (event) {
+                const menu = document.getElementById("mobileMenu");
+                const hamburger = document.querySelector(".hamburger-menu");
+                if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                    menu.classList.remove("show");
+                }
+            });
+        </script>
+    
+    </header>
+
+        <div class="go-back">
+            <a href="{% url 'suppliers' %}" class="back-link">
+                <span class="arrow">&larr;</span> Go Back
+            </a>
+        </div>
+        
+        <div class="categories-section">
+            <div class="categories-carousel">
+                <div class="categories">
+                    <div class="category">
+                        <a href="{% url 'photographers' %}"
+                        class="{% if request.resolver_match.url_name == 'photographers' %}active{% endif %}">
+                            <img src="{% static 'core/2nd_top.png' %}" alt="Photographer" class="category-image">
+                            <p>PHOTOGRAPHER / VIDEOGRAPHER</p>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="{% url 'decorators' %}"
+                        class="{% if request.resolver_match.url_name == 'decorators' %}active{% endif %}">
+                            <img src="{% static 'core/decorators.png' %}" alt="Decorators" class="category-image">
+                            <p>DECORATORS</p>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="{% url 'menu_bar' %}"
+                        class="{% if request.resolver_match.url_name == 'menu_bar' %}active{% endif %}">
+                            <img src="{% static 'core/1st_top.png' %}" alt="Menu/Bar" class="category-image">
+                            <p>MENU / BAR</p>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="{% url 'choreographers' %}"
+                        class="{% if request.resolver_match.url_name == 'choreographers' %}active{% endif %}">
+                            <img src="{% static 'core/dance.png' %}" alt="Choreographers" class="category-image">
+                            <p>CHOREOGRAPHERS</p>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="{% url 'designers' %}"
+                        class="{% if request.resolver_match.url_name == 'designers' %}active{% endif %}">
+                            <img src="{% static 'core/designers.png' %}" alt="Designers" class="category-image">
+                            <p>DESIGNERS</p>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="{% url 'venue_planners' %}"
+                        class="{% if request.resolver_match.url_name == 'venue_planners' %}active{% endif %}">
+                            <img src="{% static 'core/venue.png' %}" alt="Venue planners" class="category-image">
+                            <p>VENUE PLANNERS</p>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="{% url 'makeup_artists' %}"
+                        class="{% if request.resolver_match.url_name == 'makeup_artists' %}active{% endif %}">
+                            <img src="{% static 'core/makeup_artist.png' %}" alt="Makeup artists" class="category-image">
+                            <p>MAKEUP ARTISTS</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>    
+
+        <!-- Zhanel Section -->
+        <div class="container">
+            <img src="{% static 'core/dance/zhanel.png' %}" alt="Zhanel" class="image">
+            <div class="info">
+               <div class="name">
+                <h2>Zhanel (@zhanelzh)</h2>
+               </div>  
+                <p>Zhanel is a choreographer with a unique style and vibrant performances.<br>
+                Specializing in high heels dance, she conducts classes in Almaty. <br>
+                Zhanel will help you feel confident on the dance floor and improve your technique.</p>
+                <p class="contact-info">Contact: +7 (701) 123-4567 | Instagram <a href="https://www.instagram.com/zhanelzh?igsh=cmJtMmlxaHkyMm9w" target="_blank">@zhanelzh</a></p>
+            </div>
+        </div>
+
+        <!-- Madina Section -->
+        <div class="container">
+            <img src="{% static 'core/dance/madina.png' %}" alt="Madina" class="image">
+            <div class="info">
+              <div class="name"> 
+                <h2>Madina Toyzhanovna (@toyzhanova_madina)</h2>
+              </div>
+                <p>Madina is an experienced choreographer and dancer who offers <br>
+                both group and private classes in Almaty. <br>
+                Her style combines artistry and technique, making each training session productive and inspiring.</p>
+                <p class="contact-info">Contact: +7 (701) 234-5678 | Instagram <a href="https://www.instagram.com/toyzhanova_madina?igsh=OHk1cDRydDc0NTVx" target="_blank">@toyzhanova_madina</a></p>
+            </div>
+        </div>
+
+        <!-- Jey Pan Section -->
+        <div class="container">
+            <img src="{% static 'core/dance/jey.png' %}" alt="Jey Pan" class="image">
+            <div class="info">
+               <div class="name"> 
+                <h2>Jey Pan (@jey.pan)</h2>
+               </div>
+                <p>Jey Pan is a choreographer and mentor who inspires students<br>
+                    to express themselves creatively. <br>
+                    In addition to dancing, he helps create videos and scripts for unique projects.</p>
+                <p class="contact-info">Contact: WhatsApp +7 (775) 960-85-93 | Instagram <a href="https://www.instagram.com/jey.pan?igsh=amZvM2g4N2Uxdno0" target="_blank">@jey.pan</a></p>
+            </div>
+        </div>
+
+        <!-- Shahin Ve Section -->
+        <div class="container">
+            <img src="{% static 'core/dance/shanin.png' %}" alt="Shahin Ve" class="image">
+            <div class="info">
+              <div class="name">  
+                <h2>Shahin Ve (@shahin.ve)</h2>
+              </div>
+                <p>Shahin is a professional choreographer and dancer who speaks five languages.<br>
+                    He conducts high heels classes in Almaty, teaches dance, and offers English lessons,<br>
+                    creating a welcoming atmosphere in his sessions.</p>
+                <p class="contact-info">Contact: +7 (701) 345-6789 | Telegram @shahinclass | Instagram <a href="https://www.instagram.com/shahin.ve?igsh=NXE0aDczZzkwYTBl" target="_blank">@shahin.ve</a></p>
+            </div>
+        </div>
+        
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>Happy Holiday</h2>
+            </div>
+            <div class="social-media">
+                <div class="social-icon">
+                    <a href="#"><img src="{% static 'core/telegram.png' %}" alt="Telegram" class="icon"></a>
+                    <a href="#"><img src="{% static 'core/instagram.png' %}" alt="Instagram" class="icon"></a>
+                    <a href="#"><img src="{% static 'core/twitter.png' %}" alt="Twitter" class="icon"></a>
+                    <a href="#"><img src="{% static 'core/facebook.png' %}" alt="Facebook" class="icon"></a>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy;2024 Happy Holiday | All Rights Reserved
+            </div>
+            <div class="contact-info">
+                <h3>Contact Details</h3>
+                <div class="info-item">
+                    <span class="icon">📍</span>
+                    <p><strong>Address:</strong> Almaty Region, Kaskelen, Abylai Khan 1/1</p>
+                </div>
+                <div class="info-item">
+                    <span class="icon">📞</span>
+                    <p><strong>Phone:</strong> +7 777 604 78 68</p>
+                </div>
+                <div class="info-item">
+                    <span class="icon">✉️</span>
+                    <p><strong>Email:</strong> 220107001@stu.sdu.edu.kz</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

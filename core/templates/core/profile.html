@@ -1,0 +1,137 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Holiday - Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{% static 'core/profile.css' %}">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="logo">
+            <h1>Happy Holiday</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'location' %}">Location</a></li>
+                <li><a href="{% url 'suppliers' %}">Services</a></li>
+                <li><a href="{% url 'about_us' %}">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <!-- Hamburger menu button -->
+                <div class="hamburger-menu" onclick="toggleMenu()">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+        
+                <!-- Mobile Menu -->
+                <div class="mobile-menu" id="mobileMenu">
+                    <ul>
+                        <li>
+                            <a href="{% url 'profile' %}">
+                                <i class="fa fa-user-circle"></i> My Account
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'cart' %}">
+                                <i class="fa fa-shopping-cart"></i> Cart
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'orders' %}">
+                                <i class="fa fa-list"></i> My Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}">
+                                <i class="fa fa-sign-out-alt"></i> Log Out
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{% url 'signin' %}" class="login-btn">Sign in</a>
+                <a href="{% url 'signup' %}" class="signup-btn">Sign up</a>
+            {% endif %}
+        </div>   
+        <script>
+            // Function to toggle the mobile menu
+            function toggleMenu() {
+                const menu = document.getElementById("mobileMenu");
+                menu.classList.toggle("show");
+            }
+    
+            // Close the menu when clicking outside
+            window.addEventListener("click", function (event) {
+                const menu = document.getElementById("mobileMenu");
+                const hamburger = document.querySelector(".hamburger-menu");
+                if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                    menu.classList.remove("show");
+                }
+            });
+        </script>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="container mt-5">
+        <div class="profile-wrapper">
+            <h2 class="text-center mb-4">My Profile</h2>
+            <ul class="profile-list">
+                <li><strong>ID:</strong> {{ user.id }}</li>
+                <li><strong>Username:</strong> {{ user.username }}</li>
+                <li><strong>First Name:</strong> {{ user.first_name }}</li>
+                <li><strong>Last Name:</strong> {{ user.last_name }}</li>
+                <li><strong>Email:</strong> {{ user.email }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-content">
+          <div class="footer-logo">
+              <h2>Happy Holiday</h2>
+          </div>
+          <div class="social-media">
+              <div class="social-icon">
+                  <a href="#"><img src="{% static 'core/telegram.png' %}" alt="Telegram" class="icon"></a>
+                  <a href="#"><img src="{% static 'core/instagram.png' %}" alt="Instagram" class="icon"></a>
+                  <a href="#"><img src="{% static 'core/twitter.png' %}" alt="Twitter" class="icon"></a>
+                  <a href="#"><img src="{% static 'core/facebook.png' %}" alt="Facebook" class="icon"></a>
+              </div>
+          </div>
+          <div class="copyright">
+              &copy;2024 Happy Holiday | All Rights Reserved
+          </div>
+          <div class="contact-info">
+              <h3>Contact Details</h3>
+              <div class="info-item">
+                  <span class="icon">📍</span>
+                  <p><strong>Address:</strong> Almaty Region, Kaskelen, Abylai Khan 1/1</p>
+              </div>
+              <div class="info-item">
+                  <span class="icon">📞</span>
+                  <p><strong>Phone:</strong> +7 777 604 78 68</p>
+              </div>
+              <div class="info-item">
+                  <span class="icon">✉️</span>
+                  <p><strong>Email:</strong> 220107001@stu.sdu.edu.kz</p>
+              </div>
+          </div>
+      </div>
+    </footer>
+
+</body>
+</html>

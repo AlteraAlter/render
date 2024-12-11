@@ -1,0 +1,201 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Happy Holiday</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{% static 'core/about_us.css' %}">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="logo">
+            <h1>Happy Holiday</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'location' %}">Location</a></li>
+                <li><a href="{% url 'suppliers' %}">Services</a></li>
+                <li><a href="{% url 'about_us' %}" class="active">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            {% if user.is_authenticated %}
+                <!-- Hamburger menu button -->
+                <div class="hamburger-menu" onclick="toggleMenu()">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+        
+                <!-- Mobile Menu -->
+                <div class="mobile-menu" id="mobileMenu">
+                    <ul>
+                        <li>
+                            <a href="{% url 'profile' %}">
+                                <i class="fa fa-user-circle"></i> My Account
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'cart' %}">
+                                <i class="fa fa-shopping-cart"></i> Cart
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'orders' %}">
+                                <i class="fa fa-list"></i> My Orders
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'logout' %}">
+                                <i class="fa fa-sign-out-alt"></i> Log Out
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{% url 'signin' %}" class="login-btn">Sign in</a>
+                <a href="{% url 'signup' %}" class="signup-btn">Sign up</a>
+            {% endif %}
+        </div>      
+        <script>
+            // Function to toggle the mobile menu
+            function toggleMenu() {
+                const menu = document.getElementById("mobileMenu");
+                menu.classList.toggle("show");
+            }
+    
+            // Close the menu when clicking outside
+            window.addEventListener("click", function (event) {
+                const menu = document.getElementById("mobileMenu");
+                const hamburger = document.querySelector(".hamburger-menu");
+                if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                    menu.classList.remove("show");
+                }
+            });
+        </script>
+    </header>
+
+
+    <!-- Hero Section -->
+    <section class="hero-section2">
+        <h1>Happy Holiday</h1>
+        <p>We take care of the details, so you can enjoy the moment!</p>
+    </section>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- About Us Section -->
+        <section class="about-us section">
+            <h2>About Us</h2>
+            <div class="content">
+                <p>Happy Holiday is a leading event management company<br>
+                    with a passion for creating memorable experiences. We<br>
+                    manage over 30 venues across the city, organizing and hosting<br>
+                    thousands of events each year. From corporate gatherings to<br>
+                    private celebrations, our team ensures that every detail is<br>
+                    carefully handled so you can enjoy every moment.
+                </p>
+                <div class="image-placeholder">
+                    <img src="{% static 'core/1st.png' %}" alt="About Us Image" class="placeholder-image">
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats section">
+            <div class="stat-item">
+                <h3>10,000+</h3>
+                <p>Held more events</p>
+            </div>
+            <div class="stat-item">
+                <h3>2000</h3>
+                <p>Annual Events</p>
+            </div>
+            <div class="stat-item">
+                <h3>1000</h3>
+                <p>Event Venues</p>
+            </div>
+            <div class="stat-item">
+                <h3>1.5M</h3>
+                <p>Followers</p>
+            </div>
+        </section>
+
+        <!-- What We Offer Section -->
+        <section class="what-we-offer section2">
+            <div class="image-placeholder2">
+                <img src="{% static 'core/decorators.png' %}" alt="What We Offer Image" class="placeholder-image2">
+            </div>
+
+            <h2>What We Offer</h2>
+            <div class="content2">
+                <p>At Happy Holiday, we provide a range of suppliers<br> 
+                    to make your event unforgettable. From catering and <br>
+                    decor to entertainment and equipment rental, we customize<br>
+                     every aspect of your event based on your preferences. Our<br>
+                      team collaborates with top vendors and professionals to<br>
+                       bring your vision to life.</p>
+            </div>
+        </section>
+
+        <!-- Who We Are Section -->
+        <section class="who-we-are section">
+            <h2>Who We Are</h2>
+            <div class="content">
+                <p>Our team is a dedicated group of event management<br>
+                     experts, designers, and coordinators who are passionate<br>
+                      about creating unique experiences. With years of experience<br>
+                       in the industry, we ensure that every event is managed with<br>
+                        precision and creativity.</p>
+                <div class="image-placeholder">
+                    <img src="{% static 'core/dance.png' %}" alt="Who We Are Image" class="placeholder-image">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>Happy Holiday</h2>
+            </div>
+            <div class="social-media">
+                <a href="#"><img src="{% static 'core/telegram.png' %}" alt="Telegram" class="icon"></a>
+                <a href="#"><img src="{% static 'core/instagram.png' %}" alt="Instagram" class="icon"></a>
+                <a href="#"><img src="{% static 'core/twitter.png' %}" alt="Twitter" class="icon"></a>
+                <a href="#"><img src="{% static 'core/facebook.png' %}" alt="Facebook" class="icon"></a>
+            </div>
+            <div class="copyright">
+                &copy;2024 Happy Holiday | All Rights Reserved
+            </div>
+            <div class="contact-info">
+                <h3>Contact Details</h3>
+                <div class="info-item">
+                    <span class="icon">📍</span>
+                    <p><strong>Address:</strong> Almaty Region, Kaskelen, Abylai Khan 1/1</p>
+                </div>
+                <div class="info-item">
+                    <span class="icon">📞</span>
+                    <p><strong>Phone:</strong> +7 777 604 78 68</p>
+                </div>
+                <div class="info-item">
+                    <span class="icon">✉️</span>
+                    <p><strong>Email:</strong> 220107001@stu.sdu.edu.kz</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
