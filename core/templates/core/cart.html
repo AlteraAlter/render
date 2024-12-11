@@ -15,6 +15,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="{% static 'core/cart.css' %}">
+    <style>
+        .border-highlight {
+                border: 2px solid #28a745 !important; /* Green border */
+            }
+    </style>
 </head>
 
 <body>
@@ -26,52 +31,69 @@
         </div>
         <nav>
             <ul>
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'location' %}">Location</a></li>
+                <li><a href="{% url 'home' %}" >Home</a></li>
+                <li><a href="{% url 'location' %}" class="active">Location</a></li>
                 <li><a href="{% url 'suppliers' %}">Services</a></li>
                 <li><a href="{% url 'about_us' %}">About Us</a></li>
             </ul>
+
         </nav>
         <div class="auth-buttons">
-            {% if user.is_authenticated %}
-            <!-- Hamburger menu button -->
-            <div class="hamburger-menu" onclick="toggleMenu()">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %} " style="font-size: 1.4rem; text-decoration: none; color: #1b1b1b;
+                        margin: 20px 20px">
+                <i class="fa fa-user-circle"></i>
+                Hi, {{ user.username }}
+            </a>
+                    <!-- Hamburger menu button -->
+                    <div class="hamburger-menu" onclick="toggleMenu()">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <!-- Mobile Menu -->
+                    <div class="mobile-menu" id="mobileMenu">
+                        <ul>
+
+                            <li>
+                                <a href="{% url 'cart' %}">
+                                    <i class="fa fa-shopping-cart"></i> My Cart {% if cart_num %} ({{ cart_num }}) {% endif %}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'orders' %}">
+                                    <i class="fa fa-list"></i> My Orders
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout' %}">
+                                    <i class="fa fa-sign-out-alt"></i> Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="login-btn">Sign in</a>
+                    <a href="{% url 'signup' %}" class="signup-btn">Sign up</a>
+                {% endif %}
             </div>
 
-            <!-- Mobile Menu -->
-            <div class="mobile-menu" id="mobileMenu">
-                <ul>
-                    <li><a href="{% url 'profile' %}"><i class="fa fa-user-circle"></i> My Account</a></li>
-                    <li><a href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Cart</a></li>
-                    <li><a href="{% url 'orders' %}"><i class="fa fa-list"></i> My Orders</a></li>
-                    <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out-alt"></i> Log Out</a></li>
-                </ul>
-            </div>
-            {% else %}
-            <a href="{% url 'signin' %}" class="login-btn">Sign in</a>
-            <a href="{% url 'signup' %}" class="signup-btn">Sign up</a>
-            {% endif %}
-        </div>
-
-        <script>
-            // Function to toggle the mobile menu
-            function toggleMenu() {
-                const menu = document.getElementById("mobileMenu");
-                menu.classList.toggle("show");
-            }
-
-            // Close the menu when clicking outside
-            window.addEventListener("click", function (event) {
-                const menu = document.getElementById("mobileMenu");
-                const hamburger = document.querySelector(".hamburger-menu");
-                if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
-                    menu.classList.remove("show");
+            <script>
+                // Function to toggle the mobile menu
+                function toggleMenu() {
+                    const menu = document.getElementById("mobileMenu");
+                    menu.classList.toggle("show");
                 }
-            });
-        </script>
+
+                // Close the menu when clicking outside
+                window.addEventListener("click", function (event) {
+                    const menu = document.getElementById("mobileMenu");
+                    const hamburger = document.querySelector(".hamburger-menu");
+                    if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                        menu.classList.remove("show");
+                    }
+                });
+            </script>
     </header>
 
     <div class="main-content">
@@ -81,13 +103,14 @@
 
         {% for item in cart %}
         <div class="custom-container my-5">
+            <h3>Cart № {{ forloop.counter }}</h3>
             <!-- Order Block -->
             <div class="p-4 border rounded">
                 <!-- Headers -->
                 <div class="custom-row fw-bold mb-2">
                     <span>Location</span>
                     <span>Capacity</span>
-                    <span>Date</span>
+                    <span>Date <span class="text-danger">(Only for 1 day)</span> </span>
                     <span>Price</span>
                 </div>
         
@@ -362,50 +385,63 @@
     }
 
     // Function to update service quantity and recalculate the total price
-    function updateServiceQuantity(button, change, servicePrice, serviceId) {
-        const quantityElement = button.parentNode.querySelector('.service-quantity');
-        let currentQuantity = parseInt(quantityElement.innerText);
+    // Function to update service quantity and price
+function updateServiceQuantity(button, change, servicePrice, serviceId) {
+    const quantityElement = button.parentNode.querySelector('.service-quantity');
+    let currentQuantity = parseInt(quantityElement.innerText);
 
-        // Update quantity
-        currentQuantity += change;
+    // Update quantity
+    currentQuantity += change;
 
-        // Prevent negative values
-        if (currentQuantity < 0) currentQuantity = 0;
+    // Prevent negative values
+    if (currentQuantity < 0) currentQuantity = 0;
 
-        // Update quantity in the UI
-        quantityElement.innerText = currentQuantity;
+    // Update quantity in the UI
+    quantityElement.innerText = currentQuantity;
 
-        // Recalculate service price
-        const priceElement = button.parentNode.parentNode.querySelector('.service-price');
-        const newPrice = servicePrice * currentQuantity;
-        priceElement.innerText = `${newPrice} KZT`;
+    // Recalculate service price
+    const priceElement = button.parentNode.parentNode.querySelector('.service-price');
+    const newPrice = servicePrice * currentQuantity;
+    priceElement.innerText = `${newPrice} KZT`;
 
-        // Update total price
-        updateTotal();
+    // Highlight the border if quantity is greater than 0 (optional styling)
+    const listItem = button.closest('.list-group-item');
+    if (currentQuantity > 0) {
+        listItem.classList.add('border-highlight'); // Add border highlight class
+    } else {
+        listItem.classList.remove('border-highlight'); // Remove border highlight class
     }
 
-    // Recalculate total price
-    function updateTotal() {
-        let total = 0;
+    // Update total price
+    updateTotal();
+}
 
-        // Add location price
-        const locationPriceElement = document.getElementById('locationPrice');
-        const locationPrice = locationPriceElement ? parseInt(locationPriceElement.innerText) : 0;
-        total += locationPrice;
+// Function to recalculate the total price
+function updateTotal() {
+    let total = 0;
 
-        // Add price for each service based on quantity
-        document.querySelectorAll('.list-group-item').forEach(item => {
-            const quantity = parseInt(item.querySelector('.service-quantity').innerText) || 0;
-            const servicePrice = parseInt(item.querySelector('.service-price').getAttribute('data-base-price')) || 0;
-            total += quantity * servicePrice;
-        });
+    // Add location price (get value from the location price element)
+    const locationPriceElement = document.getElementById('locationPrice');
+    const locationPrice = locationPriceElement ? parseInt(locationPriceElement.innerText) : 0;
+    total += locationPrice;
 
-        // Update the total price in the UI
-        document.querySelector('.totalPrice').innerText = `${total} KZT`;
+    // Add price for each service based on quantity
+    document.querySelectorAll('.list-group-item').forEach(item => {
+        const quantity = parseInt(item.querySelector('.service-quantity').innerText) || 0;
+        const servicePrice = parseInt(item.querySelector('.service-price').getAttribute('data-base-price')) || 0;
+        total += quantity * servicePrice;
+    });
 
-        // Store total price in a hidden field (for form submission)
+    // Update the total price in the UI
+    document.querySelector('.totalPrice').innerText = `${total} KZT`;
 
+    // Optionally, store the total price in a hidden input field (for form submission)
+    const totalPriceField = document.getElementById('totalPriceField');
+    if (totalPriceField) {
+        totalPriceField.value = total; // Store in hidden field if needed for form submission
     }
+}
+
 
     // Submit the payment and send the correct total price to the server
     function submitPayment(element) {

@@ -164,6 +164,7 @@ def location(request):
     date = request.GET.get('date', '')
     guests = request.GET.get('guests', '')
     print(location)
+
     # Start with all locations
     locations = Location.objects.all()
 
@@ -178,7 +179,7 @@ def location(request):
     # Exclude locations already booked on the specified date
     if date:
         try:
-            date_obj = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            date_obj = datetime.strptime(date, "%Y-%m-%d").date()
             locations = locations.exclude(bookings__booking_date=date_obj)
         except ValueError:
             return render(request, 'core/locations.html', {
@@ -186,12 +187,21 @@ def location(request):
                 'error': 'Invalid date format. Use YYYY-MM-DD.'
             })
 
+    # Get the user's cart items
+    if request.user.is_authenticated:
+        carts = Cart.objects.filter(user=request.user)
+        # Get a set of location IDs that are in the cart for easy lookup
+        locations_in_cart = set(carts.values_list('location_id', flat=True))
+    else:
+        locations_in_cart = set()
+
     # Render the results
-    print(locations)
     return render(request, 'core/locations.html', {
-        'SW': locations.filter(location_type='SW'),
-        'MW': locations.filter(location_type='MW'),
+        'SW': locations.filter(location_type='SV'),
+        'MW': locations.filter(location_type='MV'),
         'CC': locations.filter(location_type='CC'),
+        'cart_num': len(carts) if carts else None,
+        'locations_in_cart': locations_in_cart,  # Pass the locations already in the cart
     })
 
 
@@ -321,13 +331,12 @@ def after_order(request):
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-
-
 def my_orders(request):
     order = Order.objects.filter(user=request.user.id)
     print(order)
-        
+
     return render(request, 'core/my_orders.html', {'orders': order})
+
 
 def get_blocked_dates(request):
     blocked_dates = Booking.objects.values_list('booking_date', flat=True)
@@ -363,6 +372,7 @@ def delete_booking(request, pk):
         order.delete()
         return redirect('manager')
     return render(request, 'core/confirm_delete.html', {'order': order})
+
 
 @csrf_exempt
 def update_status(request):

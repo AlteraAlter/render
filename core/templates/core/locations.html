@@ -75,63 +75,57 @@
                 </div>
                 <div class="card-container sea-view">
                     {% for location in SW %}
-                        <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
-                            <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ location.name }}</h5>
-                                <p class="card-text">{{ location.description }}</p>
+                    <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
+                        <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ location.name }}</h5>
+                            <p class="card-text">{{ location.description }}</p>
 
-                                <div class="container mt-5">
-                                    <!-- Button to Open Modal -->
+                            <div class="container mt-5">
+                                <!-- Button to Open Modal -->
+                                {% if location.id in locations_in_cart %}
+                                    <button type="button" class="btn btn-secondary" disabled>
+                                        Already in Cart
+                                    </button>
+                                {% else %}
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace }}">
                                         View Details
                                     </button>
+                                {% endif %}
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel{{ forloop.counter }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <!-- Close Button -->
-                                                <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel{{ forloop.counter }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <!-- Close Button -->
+                                            <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                                                <div class="modal-body">
-                                                    <img src="{{ location.image.url }}" alt="Modal Image" class="modal-image img-fluid">
-                                                    <h5 class="modal-title mt-3" id="exampleModalLabel{{ forloop.counter }}">{{ location.name }}</h5>
-                                                    <p class="modal-description">{{ location.description }}</p>
-                                                    <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }} people</strong> </p>
-                                                    <p class="modal-capacity"><strong>Price: {{ location.base_price }} KZT</strong></p>
-                                                    <div class="d-flex justify-content-center">
-                                                        <!-- Add to Cart Button -->
-                                                    <button type="button"
-                                                            class="btn btn-primary add-to-cart-btn"
-                                                            id="liveToastBtn"
-                                                            data-id="{{ location.id }}"
-                                                            data-name="{{ location.name }}">
-                                                        Add to Cart
-                                                    </button>
+                                            <div class="modal-body">
+                                                <img src="{{ location.image.url }}" alt="Modal Image" class="modal-image img-fluid">
+                                                <h5 class="modal-title mt-3" id="exampleModalLabel{{ forloop.counter }}">{{ location.name }}</h5>
+                                                <p class="modal-description">{{ location.description }}</p>
+                                                <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }} people</strong> </p>
+                                                <p class="modal-capacity"><strong>Price: {{ location.base_price }} KZT</strong></p>
+                                                <div class="d-flex justify-content-center">
+                                                    <!-- Add to Cart Button -->
+                                                    {% if location.id not in locations_in_cart %}
+                                                        <button type="button"
+                                                                class="btn btn-primary add-to-cart-btn"
+                                                                id="liveToastBtn"
+                                                                data-id="{{ location.id }}"
+                                                                data-name="{{ location.name }}">
+                                                            Add to Cart
+                                                        </button>
+                                                    {% endif %}
                                                     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                                                      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                                                        <div class="toast-header">
-
-                                                          <strong class="me-auto">HappyHoliday</strong>
-                                                          <small>Now</small>
-                                                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="toast-body">
-                                                            {{ location.name }} has been added to cart!
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                                                            <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                                                                <div class="toast-header">
-                                                                    <strong class="me-auto">HappyHoliday</strong>
-                                                                    <small>Now</small>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                                                                </div>
-                                                                <div class="toast-body">
-                                                                    {{ location.name }} has been added to cart!
-                                                                </div>
+                                                        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                            <div class="toast-header">
+                                                                <strong class="me-auto">HappyHoliday</strong>
+                                                                <small>Now</small>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="toast-body">
+                                                                {{ location.name }} has been added to cart!
                                                             </div>
                                                         </div>
                                                     </div>
@@ -142,7 +136,8 @@
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
+                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
@@ -154,63 +149,69 @@
                 </div>
                 <div class="card-container mountain-view">
                     {% for location in MW %}
-                        <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
-                            <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ location.name }}</h5>
-                                <p class="card-text">{{ location.description }}</p>
+                    <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
+                        <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ location.name }}</h5>
+                            <p class="card-text">{{ location.description }}</p>
 
-                                <div class="container mt-5">
-                                    <!-- Button to Open Modal -->
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace}}">
+                            <div class="container mt-5">
+                                <!-- Button to Open Modal -->
+                                {% if location.id in locations_in_cart %}
+                                    <button type="button" class="btn btn-secondary" disabled>
+                                        Already in Cart
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace }}">
                                         View Details
                                     </button>
+                                {% endif %}
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                          <div class="modal-content">
-                                            <!-- Кнопка закрытия -->
-                                            <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel{{ forloop.counter }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <!-- Close Button -->
+                                            <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
 
                                             <div class="modal-body">
                                                 <img src="{{ location.image.url }}" alt="Modal Image" class="modal-image img-fluid">
-                                                <h5 class="modal-title mt-3" id="exampleModalLabel">{{ location.name }}</h5>
+                                                <h5 class="modal-title mt-3" id="exampleModalLabel{{ forloop.counter }}">{{ location.name }}</h5>
                                                 <p class="modal-description">{{ location.description }}</p>
-                                                <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }} people</strong></p>
-                                                <p class="modal-capacity"><strong>Price: {{ location.base_price }}KZT</strong></p>
+                                                <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }} people</strong> </p>
+                                                <p class="modal-capacity"><strong>Price: {{ location.base_price }} KZT</strong></p>
                                                 <div class="d-flex justify-content-center">
                                                     <!-- Add to Cart Button -->
-                                                    <button type="button"
-                                                            class="btn btn-primary add-to-cart-btn"
-                                                            id="liveToastBtn"
-                                                            data-id="{{ location.id }}"
-                                                            data-name="{{ location.name }}">
-
-                                                        Add to Cart
-                                                    </button>
+                                                    {% if location.id not in locations_in_cart %}
+                                                        <button type="button"
+                                                                class="btn btn-primary add-to-cart-btn"
+                                                                id="liveToastBtn"
+                                                                data-id="{{ location.id }}"
+                                                                data-name="{{ location.name }}">
+                                                            Add to Cart
+                                                        </button>
+                                                    {% endif %}
                                                     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                                                      <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                                                        <div class="toast-header">
-
-                                                          <strong class="me-auto">HappyHoliday</strong>
-                                                          <small>Now</small>
-                                                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                            <div class="toast-header">
+                                                                <strong class="me-auto">HappyHoliday</strong>
+                                                                <small>Now</small>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="toast-body">
+                                                                {{ location.name }} has been added to cart!
+                                                            </div>
                                                         </div>
-                                                        <div class="toast-body">
-                                                            {{ location.name }} has been added to cart
-                                                        </div>
-                                                      </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                          </div>
                                         </div>
-                                      </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
+                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
@@ -222,61 +223,69 @@
                 </div>
                 <div class="card-container city-center">
                     {% for location in CC %}
-                        <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
-                            <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ location.name }}</h5>
-                                <p class="card-text">{{ location.description }}</p>
+                    <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
+                        <img class="card-img-top" src="{{ location.image.url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ location.name }}</h5>
+                            <p class="card-text">{{ location.description }}</p>
 
-                                <div class="container mt-5">
-                                    <!-- Button to Open Modal -->
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace}}">
+                            <div class="container mt-5">
+                                <!-- Button to Open Modal -->
+                                {% if location.id in locations_in_cart %}
+                                    <button type="button" class="btn btn-secondary" disabled>
+                                        Already in Cart
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace }}">
                                         View Details
                                     </button>
+                                {% endif %}
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                          <div class="modal-content">
-                                            <!-- Кнопка закрытия -->
-                                            <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal{{ location.name | remove_whitespace}}" tabindex="-1" aria-labelledby="exampleModalLabel{{ forloop.counter }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <!-- Close Button -->
+                                            <button type="button" class="btn-close close-btn" data-bs-dismiss="modal" aria-label="Close"></button>
 
                                             <div class="modal-body">
                                                 <img src="{{ location.image.url }}" alt="Modal Image" class="modal-image img-fluid">
-                                                <h5 class="modal-title mt-3" id="exampleModalLabel">{{ location.name }}</h5>
+                                                <h5 class="modal-title mt-3" id="exampleModalLabel{{ forloop.counter }}">{{ location.name }}</h5>
                                                 <p class="modal-description">{{ location.description }}</p>
-                                                <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }}people </strong></p>
-                                                <p class="modal-capacity"><strong>Price: {{ location.base_price }}KZT</strong></p>
+                                                <p class="modal-capacity"><strong>Capacity: {{ location.number_of_guests }} people</strong> </p>
+                                                <p class="modal-capacity"><strong>Price: {{ location.base_price }} KZT</strong></p>
                                                 <div class="d-flex justify-content-center">
-                                                    <button type="button"
-                                                            class="btn btn-primary add-to-cart-btn"
-                                                            id="liveToastBtn"
-                                                            data-id="{{ location.id }}"
-                                                            data-name="{{ location.name }}">
-                                                        Add to Cart
-                                                    </button>
+                                                    <!-- Add to Cart Button -->
+                                                    {% if location.id not in locations_in_cart %}
+                                                        <button type="button"
+                                                                class="btn btn-primary add-to-cart-btn"
+                                                                id="liveToastBtn"
+                                                                data-id="{{ location.id }}"
+                                                                data-name="{{ location.name }}">
+                                                            Add to Cart
+                                                        </button>
+                                                    {% endif %}
                                                     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                                                      <div id="liveToast{{ location.id }}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                                                        <div class="toast-header">
-
-                                                          <strong class="me-auto">HappyHoliday</strong>
-                                                          <small>Now</small>
-                                                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                                            <div class="toast-header">
+                                                                <strong class="me-auto">HappyHoliday</strong>
+                                                                <small>Now</small>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="toast-body">
+                                                                {{ location.name }} has been added to cart!
+                                                            </div>
                                                         </div>
-                                                        <div class="toast-body">
-                                                            {{ location.name }} has been added to cart
-                                                        </div>
-                                                      </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                          </div>
                                         </div>
-                                      </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
+                    </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
@@ -341,7 +350,6 @@
 
                 addToCartButtons.forEach(button => {
                     button.addEventListener("click", () => {
-                        // Get data attributes
                         const locationName = button.getAttribute("data-name");
                         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                         const locationId = button.getAttribute("data-id");
