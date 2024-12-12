@@ -89,9 +89,9 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db',
+        'NAME': 'happy_holiday_db',
         'USER': 'root',
-        'PASSWORD': 'altera69',
+        'PASSWORD': 'narutoshippuden45',
         'HOST': 'localhost',
         'PORT': '3306',
     }

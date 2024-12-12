@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, date
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -311,12 +311,13 @@ def after_order(request):
 
             total_price = Decimal(data['totalPrice'].split(' ')[0])
             location = Location.objects.get(pk=data['locationId'])
+            date_obj = datetime.strptime(data['date'], "%Y-%m-%d").date()
 
-            Order.objects.create(
+            order = Order.objects.create(
                 user=request.user,
                 total_price=total_price
             )
-
+            Booking.objects.create(order=order, booking_date=date_obj, location=location, user=request.user)
             # Clear the cart after order creation
             Cart.objects.filter(user=request.user, location=location).delete()
 
