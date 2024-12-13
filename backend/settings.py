@@ -96,7 +96,7 @@ DATABASES = {
     #     'PORT': '3306',
     # }
     'default': dj_database_url.parse(
-        "postgresql://db_test_swe_user:nihHYAVmCa2lXovc1qMKYdscJKZk71Q6@dpg-csr6tm52ng1s73f6k930-a.oregon-postgres.render.com/db_test_swe"
+        "postgresql://db_test_swe_ujm1_user:H2yNZRKG3kKnExweLxP39m1quz9CcGcG@dpg-cte83223esus73brmtk0-a.frankfurt-postgres.render.com/db_test_swe_ujm1"
     )
 }
 
