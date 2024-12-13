@@ -27,7 +27,7 @@
         <nav>
             <ul>
                 <li><a href="{% url 'home' %}" >Home</a></li>
-                <li><a href="{% url 'location' %}" class="active">Location</a></li>
+                <li><a href="{% url 'location' %}" >Location</a></li>
                 <li><a href="{% url 'suppliers' %}">Services</a></li>
                 <li><a href="{% url 'about_us' %}">About Us</a></li>
             </ul>
@@ -403,7 +403,7 @@
 
             // Recalculate service price
             const priceElement = button.parentNode.parentNode.querySelector('.service-price');
-            const newPrice = currentQuantity === 0 ? servicePrice : servicePrice * currentQuantity; // Retain base price if 0
+            const newPrice = currentQuantity    === 0 ? servicePrice : servicePrice * currentQuantity; // Retain base price if 0
             priceElement.innerText = `${newPrice} KZT`;
 
             // Highlight the border if quantity is greater than 0
@@ -422,7 +422,7 @@
         function updateTotal(cartContainer) {
             const totalPriceElement = cartContainer.parentNode.parentNode.querySelector('.totalPrice');
 
-            let[num, currency] = totalPriceElement.innerText.split(" ");
+            let num = totalPriceElement.getAttribute('data-price');
             let total = parseInt(num);
 
             // Add price for each service based on quantity
@@ -455,11 +455,25 @@
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const form = document.querySelector('form');  // Get the form for validation
 
+
+            //Services
+            let allServices = {}
+
+            const cartContainer = element.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+            cartContainer.querySelectorAll('.list-group-item').forEach((item, index )=> {
+                const quantity = parseInt(item.querySelector('.service-quantity').innerText) || 0;
+                if (quantity){
+                    const nameService = item.querySelector('.service-description').innerText
+                    allServices[`Service${index}`] = {nameService, quantity};
+                }
+            });
+
+
             if (form.checkValidity()) {
                 // Close the modal window
                 const myModal = new bootstrap.Modal(document.getElementById('paymentModal'));
                 myModal.hide();
-
+                console.log(allServices);
                 // Show payment processing notification
                 showPaymentProcessingNotification(totalPrice);
                 console.log(`Price from func: ${totalPrice}`);
@@ -477,17 +491,18 @@
                         totalPrice: totalPrice,
                         locationId: locationId,  // Send the unique order ID
                         date: date,
+                        services: allServices,
                     })
                 })
                     .then(response => {
                         if (response.ok) {
-
                             alert(`Payment of ${totalPrice} KZT was successfully completed!`); // Show success notification
                             setTimeout(() => {
                                 window.location.href = '/my_orders/';  // Redirect to the orders page
                              }, 500);
                         } else {
-                            alert()  // Show error notification
+                            console.log(response.json());
+                            alert('You have to select date!')  // Show error notification
                         }
                     })
                     .catch(error => {

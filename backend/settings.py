@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-a=3mwp@fd*w^tilutuhioi@%b$4hit%g!7nqr%4z!)d*+si4x#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -87,14 +87,17 @@ DATABASES = {
     #     'HOST': 'localhost',
     #     'PORT': '3306',
     # }
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'happy_holiday_db',
-        'USER': 'root',
-        'PASSWORD': 'narutoshippuden45',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'happy_holiday_db',
+    #     'USER': 'root',
+    #     'PASSWORD': 'narutoshippuden45',
+    #     'HOST': 'localhost',
+    #     'PORT': '3306',
+    # }
+    'default': dj_database_url.parse(
+        "postgresql://db_test_swe_user:nihHYAVmCa2lXovc1qMKYdscJKZk71Q6@dpg-csr6tm52ng1s73f6k930-a.oregon-postgres.render.com/db_test_swe"
+    )
 }
 
 

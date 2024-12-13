@@ -5,114 +5,6 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Минимальная высота для заполнения экрана */
-    margin: 0; /* Убираем отступы у body */
-    padding-top: 100px; 
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    margin: 0; /* Remove default body margins */
-}
-
-/* Основной контент */
-.main-content {
-    flex: 1; /* Занимает всё доступное пространство */
-    align-items: center;
-}
-
-/*header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 50px;
-    background: linear-gradient(to bottom, #e6f2ff, #66c2ff, #3399ff);
-    height: 100px;
-    position: fixed; /* Fixes the header to the top of the viewport */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.header .logo h1 {
-    font-family: 'Brush Script MT', cursive;
-    letter-spacing: 0.03em;
-    font-weight: 400;
-    color: rgba(0, 0, 0, 0.85);
-    font-size: 3.5rem;
-    margin-bottom: -25px;
-}
-
-
-nav ul {
-    list-style-type: none;
-    display: flex;
-    gap: 35px;
-    align-items: flex-end;
-    margin-right: -300px;
-    margin-bottom: -170px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    font-size: 1.4rem;
-    color: black;
-    padding-bottom: 10px;
-}
-
-nav ul li a:hover,
-nav ul li a.active {
-    color: black;
-    text-decoration: underline;
-}
-
-/* Authentication buttons: LOGIN and SIGNUP */
-.auth-buttons {
-    display: flex;
-    gap: 1rem;
-    display: flex;
-    gap: 1rem; /* Add spacing between the cart, profile, and logout button */
-    align-items: center; /* Align items vertically */
-    justify-content: flex-end; /* Keep buttons aligned to the right */
-}
-
-.login-btn,
-.signup-btn {
-    text-decoration: none;
-    padding: 10px 20px; /* Adjust padding for better appearance */
-    font-weight: 400;
-    color: white;
-    background-color: #2585e6;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better effect */
-    border: 2px solid transparent;
-    width: auto; /* Allow the button to resize based on its content */
-    text-align: center;
-    transition: all 0.3s ease;
-    margin: 0; /* Remove unwanted margins */
-    display: inline-block; /* Ensure proper alignment */
-}
-
-.auth-buttons .signup-btn {
-    background-color: white;
-    color: #3399ff;
-    border-color: #3399ff;
-}
-
-.auth-buttons .login-btn:hover,
-.auth-buttons .signup-btn:hover {
-    background-color: #0056b3;
-    color: white;
-    border-color: #0056b3;
-}
 
 /* Search icon */
 .auth-buttons .search-icon {
@@ -199,6 +91,12 @@ nav ul li a.active {
     justify-content: center;
     flex: 1; /* Takes up available space between header and footer */
     margin-top: 30px;
+}
+.hero-section h2{
+    padding: 10px 20px;
+    border-radius: 12px;
+    color: white;
+    background: linear-gradient(to right, #e0f7fa, #00aaff);
 }
 
 /* Responsive design */
@@ -304,57 +202,63 @@ nav ul li a.active {
 
 
 .locations-container1 {
+    display: flex;
+    flex-direction: column;
     text-align: left;
-    padding: 40px 50px;
-    margin-top: 10px;
+    margin-top: 50px;
+    justify-content: center;
+
 }
 
-.locations-container1 h1 {
+.locations1 h1 {
     font-size: 2.7rem;
-    margin-bottom: 30px;
     font-family: 'Poppins', serif;
     color: black;
     text-decoration: none;
     font-weight: 400;
-    margin-left: 200px;
+    background: linear-gradient(to left, #e0f7fa, #00aaff);
+    padding: 10px 20px;
 }
 
-.locations-container1 h1 a {
-    color: black;
+.locations1 h1 a {
+    color: white;
     text-decoration: none;
     cursor: default;
 }
 
-.locations-container1 h1 a:hover {
-    color: black;
-    text-decoration: none;
-}
+
 
 .locations1 {
     display: flex;
+    justify-content: center;
     gap: 5px; /* Adjusted to smaller gap */
 }
 
 .location1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: left;
     width: 30%;
+}
+.location1 a{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .location1 img {
     width: 90%; /* Increased image width by 10% */
     height: auto;
     border-radius: 8px;
-    margin-left: 100px;
 }
 
 .view-text1 {
     font-size: 1.5rem;
-    margin-top: 10px;
     color: black;
     text-decoration: none;
     font-family: 'Poppins', serif;
-    margin-left: 100px;
-    margin-bottom: 25px;
 }
 
 .location1 a {
@@ -376,7 +280,7 @@ nav ul li a.active {
 }
 
 .modal-content {
-    height: 60vh; /* Высота на весь экран */
+    height: 70dvh; /* Высота на весь экран */
     flex-direction: column;
     justify-content: center;
     padding: 20px;
@@ -439,11 +343,10 @@ nav ul li a.active {
     padding: 60px 0;
     box-sizing: border-box;
     width: 100dvw;
-    margin-left: 200px;
 
 }
 
-.locations-container{
+.locations{
     width: 50dvw;
     margin: 20px 50px;
     padding: 0;
@@ -453,7 +356,7 @@ nav ul li a.active {
     justify-content: center;
     margin-left: 300px;
 }
-.locations-container h2{
+.locations h2{
     margin: 0;
     padding: 0;
     width: 600px;
@@ -463,18 +366,26 @@ nav ul li a.active {
 .card-container{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    padding: 0 20px;
     gap: 20px;
 }
 
 .header-wrapper{
     display: flex;
-    column-gap: 40rem;
-    justify-content: center;
+    width: 100dvw;
+    justify-content: space-between;
     align-items: center;
+    background: linear-gradient(to left, #e0f7fa, #00aaff);
+    padding: 10px 20px;
+    margin: 10px 0;
 }
+
+.header-wrapper h2{
+    color: white;
+}
+
 .header-wrapper > button{
     width: 160px;
-
 }
 
 .hidden {
@@ -524,34 +435,15 @@ nav ul li a.active {
   transform: translateY(-50%); /* Ensure perfect vertical alignment */
   width: 20px; /* Set the width of the image */
   height: 20px; /* Set the height of the image */
-  background-image: url('search-icon.png'); /* Replace with your image URL */
   background-size: contain; /* Scale the image proportionally */
   background-repeat: no-repeat; /* Prevent the image from repeating */
   background-position: center; /* Ensure the image is centered */
   pointer-events: none; /* Prevent interaction with the icon */
 }
 
-/* Кнопки */
-.btn-primary{
-    background-color: #007bff;
-    border-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.btn-primary:hover{
-    background-color: #0056b3;
-    border-color: #0056b3;
-    transform: scale(1.05);
-}
-
-.btn-primary:active{
-    background-color: #003f7f;
-    border-color: #003f7f;
+.clear-filters{
+    text-align: center;
+    border-radius: 15px;
 }
 
 /* Кнопка View All */
@@ -561,8 +453,9 @@ nav ul li a.active {
     border: none;
     color: #000000;
     cursor: pointer;
-    text-decoration: underline;
+    text-decoration: none;
     font-size: 1.2rem;
+    transition: all 0.3s ease;
 
 }
 
@@ -573,7 +466,7 @@ nav ul li a.active {
 }
 
 .modal-content {
-    height: 60vh; /* Высота на весь экран */
+    height: 70dvh; /* Высота на весь экран */
     flex-direction: column;
     justify-content: center;
     padding: 20px;
@@ -633,29 +526,23 @@ nav ul li a.active {
 .footer {
     background-color: #333;
     color: white;
-    padding: 20px 0;
-    display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%; /* Ensures it spans the entire width */
-    position: relative; /* Position footer at the bottom naturally */
+    width: 100dvw; /* Ensures it spans the entire width */
     box-sizing: border-box;
     margin: 0; /* Remove any unwanted margins */
+    padding: 0 10px;
 }
 
 .footer-content {
     display: flex;
-    width: 100%;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px; /* Optional max-width for inner content */
 }
 
 .footer-logo h2 {
     font-size: 2.5rem;
     margin: 0;
-    margin-left: -250px;
-    flex-grow: 1;
 }
 
 .social-media {
@@ -679,10 +566,7 @@ img.icon {
     margin-top: 140px;
 }
 
-.contact-info {
-    width: 50%;
-    margin-right: -250px;
-}
+
 
 .contact-info h3 {
     font-size: 1.2rem;

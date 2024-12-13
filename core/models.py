@@ -15,12 +15,9 @@ class Page(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed')], default='pending')
+    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('canceled', 'Canceled')], default='pending')
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Order #{self.id} by {self.user.username}"
 
     def __str__(self):
         return f"Order #{self.id} by {self.user.username}"
@@ -82,16 +79,25 @@ class Rating(models.Model):
     def __str__(self):
         return f"Rating for {self.location.name} by {self.user.username} - {self.rating} stars"
 
-    
+
 class Booking(models.Model):
     location = models.ForeignKey(Location, related_name='bookings', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='user_bookings', on_delete=models.CASCADE)
     booking_date = models.DateField()  # Start of the booking period
     order = models.ForeignKey(Order, related_name='order', on_delete=models.CASCADE, blank=True, null=True)
 
-
     class Meta:
         unique_together = ('location', 'booking_date',)  # Prevent overlapping bookings for the same location
 
     def __str__(self):
         return f"{self.user.username} booked {self.location.name} at {self.booking_date}"
+
+
+class Service(models.Model):
+    name = models.CharField(max_length=255)
+    quantity = models.IntegerField()
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True)
+
+
+    def __str__(self):
+        return f"{self.name} (Quantity: {self.quantity})"

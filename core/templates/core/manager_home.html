@@ -22,14 +22,72 @@
         </div>
         <nav>
             <ul>
-                <li><a href="{% url 'manager' %}" class="active">Home</a></li>
+                <li><a href="{% url 'location' %}" class="active">Location</a></li>
+                <li><a href="{% url 'suppliers' %}">Services</a></li>
+                <li><a href="{% url 'about_us' %}">About Us</a></li>
             </ul>
         </nav>
-        <div class="user-options">
-             <a href="{% url "profile" %}"><img src="{% static "core/profile.png" %}" alt="" class='profile-icon'></a>  
-            <a href="{% url 'signin' %}" class="login-btn">Logout</a>
+        <div class="auth-buttons">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %} " style="font-size: 1.4rem; text-decoration: none; color: #1b1b1b;
+                        margin: 20px 20px">
+                        <i class="fa fa-user-circle"></i>
+                        Hi, {{ user.username }}
+                    </a>
+                    <!-- Hamburger menu button -->
+                    <div class="hamburger-menu" onclick="toggleMenu()">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <!-- Mobile Menu -->
+                    <div class="mobile-menu" id="mobileMenu">
+                        <ul>
+                            <li>
+                                <a href="{% url 'cart' %}">
+                                    <i class="fa fa-shopping-cart"></i> My Cart {% if cart_num %} ({{ cart_num }}) {% endif %}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'manager' %}">
+                                    <i class="fa fa-list"></i> My Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout' %}">
+                                    <i class="fa fa-sign-out-alt"></i> Log Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="login-btn">Sign in</a>
+                    <a href="{% url 'signup' %}" class="signup-btn">Sign up</a>
+                {% endif %}
         </div>
     </header>
+            <script>
+                // Function to toggle mobile menu
+                function toggleMenu() {
+                    const menu = document.getElementById("mobileMenu");
+                    menu.classList.toggle("show"); // Добавляем/удаляем класс .show для отображения меню
+
+                    const bars = document.querySelectorAll(".hamburger-menu .bar");
+                    // Меняем форму гамбургер-меню при открытии
+                    bars[0].classList.toggle("change1");
+                    bars[1].classList.toggle("change2");
+                    bars[2].classList.toggle("change3");
+                }
+
+                // Закрытие меню, если пользователь кликает вне меню
+                window.addEventListener("click", function(event) {
+                    const menu = document.getElementById("mobileMenu");
+                    const hamburger = document.querySelector(".hamburger-menu");
+                    if (!menu.contains(event.target) && !hamburger.contains(event.target)) {
+                        menu.classList.remove("show");
+                    }
+                });
+            </script>
 
     <div class="container mt-5">
         <h1 class="mb-4">Manager Dashboard</h1>

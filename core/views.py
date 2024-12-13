@@ -18,7 +18,7 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 
 from django.core.mail import send_mail
-from .models import Page, Cart
+from .models import Page, Cart, Service
 from .models import Order
 from .models import Location, Booking
 from django.shortcuts import get_object_or_404
@@ -37,7 +37,7 @@ def signin(request):
             if user is not None:
                 login(request, user)
                 if user.is_staff:
-                    return redirect('manager')
+                    return redirect('location')
                 return redirect('home')
             else:
                 form.add_error(None, "Invalid email or password")
@@ -152,10 +152,6 @@ def my_orders_view(request):
     return render(request, 'my_orders.html', {'orders': orders})
 
 
-def manager_page(request):
-    return render(request, 'core/manager_home.html', {})
-
-
 def location(request):
     # Get query parameters from the request
     location = request.GET.get('location', '')
@@ -198,8 +194,6 @@ def location(request):
         'locations_in_cart': locations_in_cart,  # Locations already in the cart
         'filters': {'location': location, 'date': date, 'guests': guests}  # Pass filters to the template
     })
-
-
 
 
 def suppliers(request):
@@ -309,6 +303,8 @@ def after_order(request):
             data = json.loads(request.body)
             print(data)  # Логируем полученные данные
 
+            services = data['services']
+
             total_price = Decimal(data['totalPrice'].split(' ')[0])
             location = Location.objects.get(pk=data['locationId'])
             date_obj = datetime.strptime(data['date'], "%Y-%m-%d").date()
@@ -317,9 +313,15 @@ def after_order(request):
                 user=request.user,
                 total_price=total_price
             )
-            Booking.objects.create(order=order, booking_date=date_obj, location=location, user=request.user)
+            booking = Booking.objects.create(order=order, booking_date=date_obj, location=location, user=request.user)
             # Clear the cart after order creation
             Cart.objects.filter(user=request.user, location=location).delete()
+            for key, value in services.items():
+                Service.objects.create(
+                    name=value['nameService'],
+                    quantity=value['quantity'],
+                    order=order,
+                )
 
             return JsonResponse({'message': 'Order created successfully'})
         except Exception as e:
@@ -329,10 +331,18 @@ def after_order(request):
 
 
 def my_orders(request):
-    order = Order.objects.filter(user=request.user.id)
-    print(order)
+    if request.user.is_staff:
+        bookings = Booking.objects.all()
+        orders = Order.objects.all().first()
+        return render(request, 'core/my_orders.html', {'bookings': bookings, 'order_stat': orders.status if orders else None})
+    else:
+        orders = Order.objects.filter(user=request.user.id)
+        services = []
+        for order in orders:
+            services.append(Service.objects.filter(order=order))
 
-    return render(request, 'core/my_orders.html', {'orders': order})
+        print(services)
+        return render(request, 'core/my_orders.html', {'orders': orders, 'services': services})
 
 
 def get_blocked_dates(request):
@@ -368,8 +378,8 @@ def delete_booking(request, pk):
     order = get_object_or_404(Order, pk=pk)
     if request.method == 'POST':
         order.delete()
-        return redirect('manager')
-    return render(request, 'core/confirm_delete.html', {'order': order})
+        return redirect('orders')
+    return render(request, 'core/confirm_delete.html', {'order': order if order else None})
 
 
 @csrf_exempt
@@ -386,4 +396,3 @@ def update_status(request):
             return JsonResponse({'status': 'success'})
         except Order.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Order not found'})
-

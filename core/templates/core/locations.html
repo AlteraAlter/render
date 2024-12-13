@@ -53,7 +53,7 @@
             <button class="filter-search" type="submit">Search</button>
 
             <!-- Clear Filters Button -->
-            <a href="{% url 'location' %}" class="clear-filters">Clear Filters</a>
+            <button href="{% url 'location' %}" class="clear-filters btn btn-info text-bg-info">Clear Filters</button>
         </div>
     </div>
 </form>
@@ -91,6 +91,7 @@
                     <h2>Locations with Sea View </h2>
                     <button class="view-all-btn" data-target="sea-view">View All</button>
                 </div>
+
                 <div class="card-container sea-view">
                     {% for location in SW %}
                     <div class="card border-primary mb-3 {% if forloop.counter > 4 %} hidden {% endif %}" style="width: 21rem;">
@@ -104,6 +105,10 @@
                                 {% if location.id in locations_in_cart %}
                                     <button type="button" class="btn btn-secondary" disabled>
                                         Already in Cart
+                                    </button>
+                                {% elif user.is_staff %}
+                                    <button type="button" class="btn btn-danger" disabled>
+                                       Admins cant add to cart
                                     </button>
                                 {% else %}
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ location.name | remove_whitespace }}">
@@ -343,8 +348,6 @@
                 </div>
             </div>
         </footer>
-
-
         <script>
             function goBack() {
                 window.location.href = '/';

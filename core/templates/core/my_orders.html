@@ -4,15 +4,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Holiday - Locations</title>
+   <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'core/my_orders.css' %}">
+
 </head>
 <body>
 
@@ -28,15 +44,14 @@
                 <li><a href="{% url 'suppliers' %}">Services</a></li>
                 <li><a href="{% url 'about_us' %}">About Us</a></li>
             </ul>
-
         </nav>
         <div class="auth-buttons">
                 {% if user.is_authenticated %}
                     <a href="{% url 'profile' %} " style="font-size: 1.4rem; text-decoration: none; color: #1b1b1b;
                         margin: 20px 20px">
-                <i class="fa fa-user-circle"></i>
-                Hi, {{ user.username }}
-            </a>
+                        <i class="fa fa-user-circle"></i>
+                        Hi, {{ user.username }}
+                    </a>
                     <!-- Hamburger menu button -->
                     <div class="hamburger-menu" onclick="toggleMenu()">
                         <div class="bar"></div>
@@ -47,16 +62,30 @@
                     <div class="mobile-menu" id="mobileMenu">
                         <ul>
 
-                            <li>
-                                <a href="{% url 'cart' %}">
-                                    <i class="fa fa-shopping-cart"></i> My Cart {% if cart_num %} ({{ cart_num }}) {% endif %}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'orders' %}">
-                                    <i class="fa fa-list"></i> My Orders
-                                </a>
-                            </li>
+                            {% if user.is_staff %}
+                                <li>
+                                    <a href="{% url 'profile' %} ">
+                                        <i class="fa fa-user-circle"></i>
+                                        Hi, {{ user.username }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'orders' %}">
+                                        <i class="fa fa-list"></i> My Dashboard
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="{% url 'cart' %}">
+                                        <i class="fa fa-shopping-cart"></i> My Cart {% if cart_num %} ({{ cart_num }}) {% endif %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'orders' %}">
+                                        <i class="fa fa-list"></i> My Orders
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li>
                                 <a href="{% url 'logout' %}">
                                     <i class="fa fa-sign-out-alt"></i> Log Out
@@ -86,13 +115,82 @@
                     }
                 });
             </script>
-    </header>
+        </header>
+        {% if user.is_staff %}
+            <div class="container mt-5" style="margin-bottom: 400px">
+            <h1 class="mb-4">Manager Dashboard</h1>
+                <form class="d-flex" role="search" style="margin-bottom: 10px;">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        <!-- Bookings Table -->
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Location</th>
+                    <th>User</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Payment</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ booking.location.name }}</td>
+                    <td>{{ booking.user.username }}</td>
+                    <td id="status-{{ booking.order.id }}">{{ booking.order.status }}</td>
+                    <td>{{ booking.order.created_at }}</td>
+                    <td>Paid</td>
+                    <td>
+                        <!-- Action Buttons -->
+                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" onclick="openEditModal({{ booking.order.id }}, '{{ booking.order.status }}' )">Edit</button>
+                        <form action="{% url 'delete_booking' booking.order.pk %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-        <main class="main-content">
+
+    <!-- Modal for editing status -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Booking Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editStatusForm" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="statusSelect" required>
+                                <option value="Pending">Pending</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        {% else %}
+            <main class="main-content">
             <div class="hero-section">
                 <h2>My Orders</h2>
             </div>
-        
+
             {% for order in orders %}
             <div class="order-container">
                 <div class="order-header">
@@ -100,7 +198,7 @@
                     <div class="order-left">
                         <h3 class="m-0">Order {{ forloop.counter }}</h3>
                     </div>
-        
+
                     <!-- Right side: Order and payment status -->
                     <div class="order-right">
                         <!-- Order Status -->
@@ -111,7 +209,7 @@
                                 <span class="text-muted">{{ order.status | upper }}</span>
                             </div>
                         </div>
-        
+
                         <!-- Payment Status -->
                         <div class="payment-status">
                             <small>Payment Status:</small>
@@ -120,7 +218,7 @@
                                 <span class="text-success fw-bold">Paid</span>
                             </div>
                         </div>
-        
+
                         <!-- Delete Order Button -->
                         <div class="delete-order">
                             <p class="d-inline-flex gap-1">
@@ -128,15 +226,19 @@
                         </div>
                     </div>
                 </div>
-        
+
                 <!-- View Details (on a new line, centered) -->
                 <div class="view-details mt-3 text-center">
-                    <a href="#" data-bs-toggle="collapse" data-bs-target="#collapseExample{{ forloop.counter }}" aria-expanded="false" aria-controls="collapseExample" class="btn btn-link p-0">
+                    <a href="#"
+                       class="btn btn-link p-0"
+                       data-bs-toggle="collapse"
+                       data-bs-target="#collapseExample{{ forloop.counter }}"
+                       aria-expanded="false"
+                       aria-controls="collapseExample{{ forloop.counter }}">
                         View Details
                     </a>
                 </div>
-        
-                <!-- Additional Details (collapsed by default) -->
+
                 <div class="collapse" id="collapseExample{{ forloop.counter }}">
                     <div class="card-body">
                         <ul class="list-group">
@@ -146,60 +248,23 @@
                             <p class="details-text">
                                 <strong>Order Date:</strong> {{ order.created_at }}
                             </p>
-                            <!-- You can add more details here -->
+                            {% for service in services %}
+                                {% if forloop.counter < 2 %}
+                                    <p class="details-text">
+                                        <strong>Services:</strong>
+                                        {% for item in service %}
+                                            {{ item.name }} Quantity {{ item.quantity }} |
+                                        {% endfor %}
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </main>
-        
-        
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Инициализация всех элементов Collapse
-                const collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
-                
-                collapseElements.forEach(element => {
-                    element.addEventListener('click', function () {
-                        const targetId = this.getAttribute('data-bs-target');
-                        const targetElement = document.querySelector(targetId);
-                        
-                        if (targetElement.classList.contains('show')) {
-                            console.log(`Collapse is now hidden: ${targetId}`);
-                        } else {
-                            console.log(`Collapse is now shown: ${targetId}`);
-                        }
-                    });
-                });
-            });
-
-            function deleteOrder(orderId) {
-                // Подтверждение перед удалением
-                if (confirm('Are you sure you want to delete this order?')) {
-                    // Отправляем запрос на сервер для удаления заказа
-                    fetch(`/delete_order/${orderId}/`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value, // Получаем CSRF токен
-                        }
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('Order deleted successfully');
-                            location.reload();  // Перезагружаем страницу, чтобы обновить список заказов
-                        } else {
-                            alert('Error deleting order');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while deleting the order');
-                    });
-                }
-            }
-        </script>
+        {% endif %}
         
         <!-- Footer Section -->
         <footer class="footer">
@@ -235,5 +300,65 @@
                 </div>
             </div>
         </footer>
+        <script>
+            function openEditModal(orderId, currentStatus) {
+            $('#statusSelect').val(currentStatus);  // Устанавливаем текущий статус в выпадающий список
+            $('#editStatusForm').off('submit').on('submit', function(e) {
+                e.preventDefault();
+                updateStatus(orderId);
+            });
+        }
+
+        // Функция для обновления статуса через AJAX
+        function updateStatus(orderId) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const newStatus = $('#statusSelect').val();
+            console.log(newStatus, 'im here');
+            $.ajax({
+                url: "{% url 'update_status' %}",  // Убедитесь, что URL правильный
+                method: "POST",
+                data: {
+                    "X-CSRFToken": csrfToken,
+                    order_id: orderId,
+                    status: newStatus
+                },
+                success: function(response) {
+                    // Обновляем статус на странице менеджера
+                    $('#status-' + orderId).text(newStatus);
+
+                    // Обновляем статус на странице заказчика
+                    $('#status-customer-' + orderId).text(newStatus);
+
+                    $('#editModal').modal('hide');  // Закрываем модальное окно
+                },
+                error: function(xhr, errmsg, err) {
+                    alert("Error updating status!");
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Select all elements with data-bs-toggle="collapse"
+            const collapseElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
+
+            // Add event listeners for Bootstrap's collapse events
+            collapseElements.forEach(element => {
+                const targetId = element.getAttribute('data-bs-target'); // e.g., "#collapseExample1"
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    // Listen for when the collapse is shown
+                    targetElement.addEventListener('shown.bs.collapse', function () {
+                        console.log(`Collapse is now shown: ${targetId}`);
+                    });
+
+                    // Listen for when the collapse is hidden
+                    targetElement.addEventListener('hidden.bs.collapse', function () {
+                        console.log(`Collapse is now hidden: ${targetId}`);
+                    });
+                }
+            });
+        });
+        </script>
 </body>
 </html>

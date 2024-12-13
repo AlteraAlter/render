@@ -27,15 +27,14 @@
                 <li><a href="{% url 'suppliers' %}">Services</a></li>
                 <li><a href="{% url 'about_us' %}">About Us</a></li>
             </ul>
-
         </nav>
         <div class="auth-buttons">
                 {% if user.is_authenticated %}
                     <a href="{% url 'profile' %} " style="font-size: 1.4rem; text-decoration: none; color: #1b1b1b;
                         margin: 20px 20px">
-                <i class="fa fa-user-circle"></i>
-                Hi, {{ user.username }}
-            </a>
+                        <i class="fa fa-user-circle"></i>
+                        Hi, {{ user.username }}
+                    </a>
                     <!-- Hamburger menu button -->
                     <div class="hamburger-menu" onclick="toggleMenu()">
                         <div class="bar"></div>
@@ -46,16 +45,30 @@
                     <div class="mobile-menu" id="mobileMenu">
                         <ul>
 
-                            <li>
-                                <a href="{% url 'cart' %}">
-                                    <i class="fa fa-shopping-cart"></i> My Cart {% if cart_num %} ({{ cart_num }}) {% endif %}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'orders' %}">
-                                    <i class="fa fa-list"></i> My Orders
-                                </a>
-                            </li>
+                            {% if user.is_staff %}
+                                <li>
+                                    <a href="{% url 'profile' %} ">
+                                        <i class="fa fa-user-circle"></i>
+                                        Hi, {{ user.username }}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'orders' %}">
+                                        <i class="fa fa-list"></i> My Dashboard
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="{% url 'cart' %}">
+                                        <i class="fa fa-shopping-cart"></i> My Cart {% if cart_num %} ({{ cart_num }}) {% endif %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'orders' %}">
+                                        <i class="fa fa-list"></i> My Orders
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li>
                                 <a href="{% url 'logout' %}">
                                     <i class="fa fa-sign-out-alt"></i> Log Out
@@ -85,7 +98,7 @@
                     }
                 });
             </script>
-    </header>
+        </header>
 
 
             <div class="hero-section">
@@ -100,19 +113,25 @@
                     <div class="location">
                         <a href="{% url 'location' %}">
                             <img src="{% static 'core/1st.png' %}" alt="With Sea View">
-                            <p class="view-text">with sea view</p>
+                            <div>
+                                <p class="view-text">with sea view</p>
+                            </div>
                         </a>
                     </div>
                     <div class="location">
                         <a href="{% url 'location' %}">
                             <img src="{% static 'core/2nd.png' %}" alt="In the City Center">
-                            <p class="view-text">in the city center</p>
+                            <div>
+                                <p class="view-text">in the city center</p>
+                            </div>
                         </a>
                     </div>
                     <div class="location">
                         <a href="{% url 'location' %}">
                             <img src="{% static 'core/3rd.png' %}" alt="With Mountain View">
-                            <p class="view-text">with mountain view</p>
+                            <div>
+                                <p class="view-text">with mountain view</p>
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -120,7 +139,9 @@
             </div>
 
             <div class="suppliers-section">
-                <h2>Top 3 Services</h2>
+                <div class="suppliers-section-wrapper">
+                    <h2>Top 3 Services</h2>
+                </div>
                 <div class="carousel">
                     <div class="carousel-card active">
                         <img src="{% static 'core/1st_top.png' %}" alt="Supplier 1" class="card-image">
@@ -199,7 +220,9 @@
             </script>
 
             <div class="categories-section">
-                <h2><a href="{% url 'suppliers' %}">Services</a></h2>
+                <div>
+                    <h2 class="category-header-text"><a href="{% url 'suppliers' %}">Services</a></h2>
+                </div>
                 <div class="categories-carousel">
                     <div class="categories">
                         <div class="category">
